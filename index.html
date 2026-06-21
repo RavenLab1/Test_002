@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#9cc03d" />
+  <title>RavenLab | مصمم كليكر السويتشات</title>
+  <meta name="description" content="صمم كليكر السويتشات الخاص بك من RavenLab باستخدام مجسمات GLB ومعاينة ثلاثية الأبعاد مباشرة." />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="RavenLab Home">
+      <span class="brand-mark">R</span>
+      <span>
+        <strong>RavenLab</strong>
+        <small>Custom Clickers</small>
+      </span>
+    </a>
+    <nav class="nav-links" aria-label="روابط الموقع">
+      <a href="#configurator">المصمم</a>
+      <a href="#gallery">المعرض</a>
+      <a href="#faq">الأسئلة</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="themeToggle" type="button" aria-label="تبديل الوضع">☾</button>
+      <a class="mini-cta" href="#configurator">ابدأ</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">RavenLab × Mechanical Clickers</p>
+        <h1>صمم كليكر السويتشات الخاص بك بمجسمات GLB حقيقية.</h1>
+        <p class="lead">اختر عدد الأزرار، لون القاعدة، ونوع كل كيكاب بشكل مستقل. المعاينة ثلاثية الأبعاد تتحدث فورًا باستخدام المجسمات التي رفعتها.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="#configurator">ابدأ التصميم</a>
+          <a class="secondary-button" href="#models-note">المجسمات الحالية</a>
+        </div>
+      </div>
+      <div class="hero-card reveal delay-1">
+        <div class="hero-product-orbit" aria-hidden="true">
+          <div class="hero-base"></div>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="hero-card-footer">
+          <span>GLB Preview Ready</span>
+          <strong>#9cc03d</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-grid section-pad">
+      <article class="feature-card reveal"><span>01</span><h3>معاينة مباشرة</h3><p>تتغير القاعدة والكيكابات فورًا حسب اختياراتك.</p></article>
+      <article class="feature-card reveal delay-1"><span>02</span><h3>اختيار متعدد</h3><p>حدد زرًا واحدًا أو عدة أزرار وطبق عليها نفس التصميم.</p></article>
+      <article class="feature-card reveal delay-2"><span>03</span><h3>جاهز للتوسع</h3><p>كل الأسعار والألوان والموديلات داخل مصفوفات سهلة التعديل.</p></article>
+    </section>
+
+    <section class="configurator section-pad" id="configurator">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Product Configurator</p>
+        <h2>مصمم RavenLab</h2>
+        <p>النسخة الحالية تستخدم الملفات المرفوعة: قواعد 1، 2، 3 أزرار وكيكاب سادة. بقية الخيارات تظهر كبنية جاهزة للتوسعة.</p>
+      </div>
+
+      <div class="config-layout">
+        <section class="config-panel reveal" aria-label="خيارات التصميم">
+          <div class="step-card">
+            <div class="step-title"><span>1</span><h3>عدد الأزرار</h3></div>
+            <div class="choice-grid count-grid" id="switchCountGrid"></div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-title"><span>2</span><h3>لون القاعدة</h3></div>
+            <div class="swatch-grid" id="baseColorGrid"></div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-title"><span>3</span><h3>اختر الكيكابات</h3></div>
+            <p class="hint">اضغط على رقم الكيكاب لتحديده. يمكنك تحديد أكثر من واحد وتعديلهم دفعة واحدة.</p>
+            <div class="slot-toolbar">
+              <button type="button" id="selectAllSlots">تحديد الكل</button>
+              <button type="button" id="clearSlots">إلغاء التحديد</button>
+            </div>
+            <div class="slot-picker" id="slotPicker"></div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-title"><span>4</span><h3>نوع الكيكاب للزر المحدد</h3></div>
+            <div class="segmented" id="keycapTypeGrid"></div>
+
+            <div class="option-block" id="plainOptions">
+              <label>لون الكيكاب</label>
+              <div class="swatch-grid compact" id="keycapColorGrid"></div>
+            </div>
+
+            <div class="option-block hidden" id="letterOptions">
+              <label for="letterInput">الحرف الإنجليزي</label>
+              <div class="inline-controls">
+                <select id="letterInput" aria-label="اختر حرفًا"></select>
+                <select id="textColorInput" aria-label="لون النص"></select>
+              </div>
+              <label>لون الكيكاب</label>
+              <div class="swatch-grid compact" id="letterColorGrid"></div>
+            </div>
+
+            <div class="option-block hidden" id="specialOptions">
+              <label>الشكل المميز</label>
+              <div class="special-grid" id="specialGrid"></div>
+            </div>
+          </div>
+
+          <div class="step-card price-card mobile-price">
+            <div class="price-row"><span>السعر النهائي</span><strong id="mobileTotalPrice">0 IQD</strong></div>
+            <button class="primary-button full" id="mobileAddToCart" type="button">إضافة إلى السلة</button>
+          </div>
+        </section>
+
+        <aside class="preview-column reveal delay-1" aria-label="المعاينة والملخص">
+          <div class="viewer-card">
+            <div class="viewer-topbar">
+              <div>
+                <strong>معاينة 3D</strong>
+                <small>اسحب للدوران، استخدم العجلة للتكبير</small>
+              </div>
+              <button type="button" id="resetCamera">إعادة ضبط</button>
+            </div>
+            <div class="viewer-shell" id="viewerShell">
+              <div class="loading" id="viewerLoading"><span></span>تحميل المجسمات...</div>
+              <canvas id="productCanvas" aria-label="معاينة المنتج الثلاثية الأبعاد"></canvas>
+            </div>
+          </div>
+
+          <div class="summary-card" id="models-note">
+            <div class="price-row"><span>السعر النهائي</span><strong id="totalPrice">0 IQD</strong></div>
+            <div class="summary-list" id="summaryList"></div>
+            <button class="primary-button full" id="addToCart" type="button">إضافة إلى السلة</button>
+            <button class="secondary-button full" id="copyJson" type="button">نسخ JSON</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="gallery section-pad" id="gallery">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Gallery</p>
+        <h2>أمثلة سريعة</h2>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item reveal"><span>Plain</span></div>
+        <div class="gallery-item reveal delay-1"><span>Letters</span></div>
+        <div class="gallery-item reveal delay-2"><span>Food</span></div>
+      </div>
+    </section>
+
+    <section class="reviews section-pad">
+      <article class="review reveal"><p>“واجهة نظيفة وتوضح المنتج قبل الطلب.”</p><strong>عميل RavenLab</strong></article>
+      <article class="review reveal delay-1"><p>“اختيار أكثر من كيكاب بنفس الوقت وفر علينا وقت.”</p><strong>Keyboard Fan</strong></article>
+      <article class="review reveal delay-2"><p>“المعاينة الثلاثية الأبعاد ممتازة للطلب المخصص.”</p><strong>Maker Desk</strong></article>
+    </section>
+
+    <section class="faq section-pad" id="faq">
+      <div class="section-heading reveal">
+        <p class="eyebrow">FAQ</p>
+        <h2>أسئلة شائعة</h2>
+      </div>
+      <details class="reveal"><summary>هل يمكن إضافة موديلات جديدة؟</summary><p>نعم. أضف ملف GLB داخل assets/models ثم حدّث مصفوفات البيانات في app.js.</p></details>
+      <details class="reveal"><summary>لماذا 4 إلى 9 مقفلة الآن؟</summary><p>لأن الملفات المرفوعة حاليًا هي base_01.glb إلى base_03.glb فقط.</p></details>
+      <details class="reveal"><summary>هل يعمل على GitHub Pages؟</summary><p>نعم، ارفع الملفات كما هي إلى المستودع وشغّل Pages على root.</p></details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© <span id="year"></span> RavenLab</span>
+    <span>Built for GLB custom product previews</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -20,6 +20,9 @@ const CONFIG = {
       waffle: 3500,
       chocolate: 3000,
     }
+
+      
+
   },
   bases: {
     1: { standard: { label: 'عادي', path: `${MODEL_DIR}base_01.glb` } },
@@ -566,7 +569,7 @@ function fitCameraToObject(animateTarget = true) {
   // حساب مسافة آمنة بناءً على حجم المجسم وزاوية الكاميرا، مع مساحة تنفس كبيرة حوله.
   const verticalFov = THREE.MathUtils.degToRad(camera.fov);
   const fitDistance = (maxDim / 2) / Math.tan(verticalFov / 2);
-  const distance = fitDistance * 3.0;
+  const distance = fitDistance * 30.0;
   const direction = new THREE.Vector3(1, 0.55, 1).normalize();
 
   camera.position.copy(center).add(direction.multiplyScalar(distance));

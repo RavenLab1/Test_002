@@ -263,7 +263,7 @@ function initThree() {
   scene.fog = new THREE.FogExp2(0x0b0d08, 0.026);
   camera = new THREE.PerspectiveCamera(35, 1, 0.01, 220);
   // أبعدنا الكاميرا الافتراضية حتى لا تبدأ داخل مجسم الكليكر.
-  camera.position.set(400, 250, 400);
+  camera.position.set(100, 75, 100);
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;

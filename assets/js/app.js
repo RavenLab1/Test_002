@@ -20,9 +20,6 @@ const CONFIG = {
       waffle: 3500,
       chocolate: 3000,
     }
-
-      
-
   },
   bases: {
     1: { standard: { label: 'عادي', path: `${MODEL_DIR}base_01.glb` } },
@@ -256,21 +253,24 @@ function initThree() {
   renderer = new THREE.WebGLRenderer({ canvas: els.viewer, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  THREE.ColorManagement.enabled = true;
+  // NeutralToneMapping يحافظ على الألوان أقرب للـ hex المختار من ACESFilm.
+  renderer.toneMapping = THREE.NeutralToneMapping || THREE.LinearToneMapping;
+  renderer.toneMappingExposure = 1.0;
 
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x0b0d08, 0.026);
-  camera = new THREE.PerspectiveCamera(35, 1, 0.01, 220);
-  // أبعدنا الكاميرا الافتراضية حتى لا تبدأ داخل مجسم الكليكر.
-  camera.position.set(25, 12, 25);
+  // أزلنا الضباب لأنه كان يغيّر إحساس اللون، خصوصًا الأبيض والأخضر.
+  scene.fog = null;
+  camera = new THREE.PerspectiveCamera(35, 1, 0.01, 700);
+  // الكاميرا أبعد بثلاث مرات من النسخة السابقة.
+  camera.position.set(25.5, 16.5, 25.5);
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   // منع الزوم من الدخول داخل المجسم. يتم تحديثها أيضًا بعد تحميل كل قاعدة.
-  controls.minDistance = 3.5;
-  controls.maxDistance = 60;
+  controls.minDistance = 9.5;
+  controls.maxDistance = 180;
   controls.target.set(0, 0, 0);
 
   loader = new GLTFLoader();
@@ -282,14 +282,24 @@ function initThree() {
 
   lightRig = new THREE.Group();
   scene.add(lightRig);
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x1d220d, 1.25);
+  // إضاءة محايدة: بدون ضوء أخضر حتى لا تتغير ألوان المنتج.
+  const ambient = new THREE.AmbientLight(0xffffff, 1.35);
+  lightRig.add(ambient);
+
+  const hemi = new THREE.HemisphereLight(0xffffff, 0xffffff, 1.15);
   lightRig.add(hemi);
-  const key = new THREE.DirectionalLight(0xffffff, 3.2);
-  key.position.set(3, 5, 5);
+
+  const key = new THREE.DirectionalLight(0xffffff, 2.1);
+  key.position.set(4, 7, 6);
   lightRig.add(key);
-  const fill = new THREE.DirectionalLight(0x9cc03d, 1.2);
-  fill.position.set(-5, 2, -3);
+
+  const fill = new THREE.DirectionalLight(0xffffff, 0.95);
+  fill.position.set(-6, 3, -4);
   lightRig.add(fill);
+
+  const rim = new THREE.DirectionalLight(0xffffff, 0.45);
+  rim.position.set(0, 4, -7);
+  lightRig.add(rim);
 
   const grid = new THREE.GridHelper(8, 16, 0x9cc03d, 0x4d4f46);
   grid.position.y = -0.025;
@@ -566,20 +576,20 @@ function fitCameraToObject(animateTarget = true) {
   const center = box.getCenter(new THREE.Vector3());
   const maxDim = Math.max(size.x, size.y, size.z, 1);
 
-  // حساب مسافة آمنة بناءً على حجم المجسم وزاوية الكاميرا، مع مساحة تنفس كبيرة حوله.
+  // حساب مسافة آمنة بناءً على حجم المجسم وزاوية الكاميرا، مع إبعاد 3x عن النسخة السابقة.
   const verticalFov = THREE.MathUtils.degToRad(camera.fov);
   const fitDistance = (maxDim / 2) / Math.tan(verticalFov / 2);
-  const distance = fitDistance * 50.0;
+  const distance = fitDistance * 9.0;
   const direction = new THREE.Vector3(1, 0.55, 1).normalize();
 
   camera.position.copy(center).add(direction.multiplyScalar(distance));
-  camera.near = Math.max(distance / 250, 0.01);
-  camera.far = Math.max(distance * 80, 220);
+  camera.near = Math.max(distance / 300, 0.01);
+  camera.far = Math.max(distance * 90, 700);
   camera.updateProjectionMatrix();
 
   controls.target.copy(center);
-  controls.minDistance = Math.max(fitDistance * 1.45, maxDim * 2.0, 2.8);
-  controls.maxDistance = Math.max(distance * 4.5, 60);
+  controls.minDistance = Math.max(fitDistance * 4.35, maxDim * 5.8, 8.0);
+  controls.maxDistance = Math.max(distance * 3.2, 180);
   controls.update();
 }
 

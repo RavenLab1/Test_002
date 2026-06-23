@@ -261,16 +261,16 @@ function initThree() {
   scene = new THREE.Scene();
   // أزلنا الضباب لأنه كان يغيّر إحساس اللون، خصوصًا الأبيض والأخضر.
   scene.fog = null;
-  camera = new THREE.PerspectiveCamera(35, 1, 0.01, 700);
-  // الكاميرا أبعد بثلاث مرات من النسخة السابقة.
-  camera.position.set(25.5, 16.5, 25.5);
+  camera = new THREE.PerspectiveCamera(35, 1, 0.01, 1200);
+  // وضع ابتدائي فقط قبل تحميل المنتج. بعد التحميل يتم ضبطها تلقائيًا حسب الحجم الحقيقي.
+  camera.position.set(90, 58, 90);
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   // منع الزوم من الدخول داخل المجسم. يتم تحديثها أيضًا بعد تحميل كل قاعدة.
-  controls.minDistance = 9.5;
-  controls.maxDistance = 180;
+  controls.minDistance = 22;
+  controls.maxDistance = 700;
   controls.target.set(0, 0, 0);
 
   loader = new GLTFLoader();
@@ -484,20 +484,17 @@ async function createCapObject(capConfig, index, slot) {
 
 function normalizeCap(model, def) {
   const box = new THREE.Box3().setFromObject(model);
-  const size = box.getSize(new THREE.Vector3());
-  const maxDim = Math.max(size.x, size.y, size.z);
-  if (!isFinite(maxDim) || maxDim <= 0) return;
+  if (box.isEmpty()) return;
 
-  // The food models are larger/heavier than the simple caps, so this keeps them near the same slot footprint.
-  const target = def.category === 'special' ? 0.62 : 0.52;
-  const factor = target / maxDim;
-  if (factor > 0 && isFinite(factor)) model.scale.multiplyScalar(factor);
-
-  const newBox = new THREE.Box3().setFromObject(model);
-  const center = newBox.getCenter(new THREE.Vector3());
+  // المجسمات الجديدة معمولة بنفس مقياس القاعدة تقريبًا، لذلك لا نصغرها.
+  // التصغير القديم كان يجعل الكابات غير مرئية تقريبًا.
+  const center = box.getCenter(new THREE.Vector3());
   model.position.x -= center.x;
   model.position.z -= center.z;
-  model.position.y -= newBox.min.y;
+  model.position.y -= box.min.y;
+
+  // رفع بسيط للأشكال الخاصة حتى لا تدخل داخل قاعدة الزر.
+  if (def.category === 'special') model.position.y += 0.25;
 }
 
 function applyBaseColor(target = null) {
@@ -551,8 +548,9 @@ function createLetterSprite(letter, color) {
   const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
   const sprite = new THREE.Sprite(material);
   sprite.name = 'letter_sprite';
-  sprite.position.set(0, 0.18, 0);
-  sprite.scale.set(0.36, 0.36, 1);
+  // بعد اعتماد مقياس GLB الحقيقي، الحرف يحتاج حجم وارتفاع أكبر حتى يظهر فوق الكاب.
+  sprite.position.set(0, 8.45, 0);
+  sprite.scale.set(7.2, 7.2, 1);
   return sprite;
 }
 
@@ -574,22 +572,31 @@ function fitCameraToObject(animateTarget = true) {
 
   const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
-  const maxDim = Math.max(size.x, size.y, size.z, 1);
+  const sphere = box.getBoundingSphere(new THREE.Sphere());
+  const radius = Math.max(sphere.radius, 1);
 
-  // حساب مسافة آمنة بناءً على حجم المجسم وزاوية الكاميرا، مع إبعاد 3x عن النسخة السابقة.
+  // ضبط ذكي حسب حجم المجسم الحقيقي، وليس مضاعفة عمياء حسب عدد الأزرار.
+  // القواعد الصغيرة تحصل على padding أعلى قليلًا، والقواعد الكبيرة padding أقل حتى لا تبتعد كثيرًا.
   const verticalFov = THREE.MathUtils.degToRad(camera.fov);
-  const fitDistance = (maxDim / 2) / Math.tan(verticalFov / 2);
-  const distance = fitDistance * 9.0;
-  const direction = new THREE.Vector3(1, 0.55, 1).normalize();
+  const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * Math.max(camera.aspect || 1, 0.1));
+  const limitingFov = Math.min(verticalFov, horizontalFov);
+  const padding = state.count <= 3 ? 1.34 : state.count <= 6 ? 1.24 : 1.14;
+  let distance = (radius / Math.sin(limitingFov / 2)) * padding;
 
+  // حدود حماية: تمنع دخول الكاميرا داخل المجسم، وتمنع المسافة الضخمة مع كليكرات 8 و9.
+  const compactMax = radius * 4.9 + 28;
+  const compactMin = radius * 2.4 + 18;
+  distance = THREE.MathUtils.clamp(distance, compactMin, compactMax);
+
+  const direction = new THREE.Vector3(1, 0.62, 1).normalize();
   camera.position.copy(center).add(direction.multiplyScalar(distance));
-  camera.near = Math.max(distance / 300, 0.01);
-  camera.far = Math.max(distance * 90, 700);
+  camera.near = Math.max(distance / 500, 0.01);
+  camera.far = Math.max(distance * 7, 1200);
   camera.updateProjectionMatrix();
 
   controls.target.copy(center);
-  controls.minDistance = Math.max(fitDistance * 4.35, maxDim * 5.8, 8.0);
-  controls.maxDistance = Math.max(distance * 3.2, 180);
+  controls.minDistance = Math.max(radius * 1.35, 18);
+  controls.maxDistance = Math.max(distance * 2.15, radius * 5.5, 220);
   controls.update();
 }
 

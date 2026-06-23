@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>RavenLab | مصمم الكليكر ثلاثي الأبعاد</title>
-  <meta name="description" content="خصص كليكر السويتشات من RavenLab مباشرة من العرض ثلاثي الأبعاد." />
+  <meta name="description" content="خصص كليكر RavenLab مباشرة من الجوال أو سطح المكتب باستخدام عرض ثلاثي الأبعاد." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -26,12 +26,12 @@
       <span class="brand-mark">R</span>
       <span>
         <strong>RavenLab</strong>
-        <small>Clicker Studio</small>
+        <small>Custom Clickers</small>
       </span>
     </a>
     <nav class="header-actions" aria-label="روابط سريعة">
+      <a href="#steps">الخطوات</a>
       <a href="#configurator">المصمم</a>
-      <a href="#how">طريقة الاستخدام</a>
       <button id="themeToggle" class="ghost-btn" type="button" aria-label="تبديل الوضع">☾</button>
     </nav>
   </header>
@@ -39,20 +39,37 @@
   <main id="top">
     <section class="hero">
       <div class="hero-copy">
-        <span class="eyebrow">تصميم مباشر من المجسمات الأصلية</span>
-        <h1>صمم كليكر RavenLab بثلاث خطوات.</h1>
-        <p>اختر عدد الأزرار، غيّر لون جسم الكليكر، ثم اضغط على أي كاب داخل المشهد لتغيير لونه أو شكله فورًا.</p>
+        <span class="eyebrow">RavenLab 3D Configurator</span>
+        <h1>صمم كليكر السويتشات من جوالك.</h1>
+        <p>اختر عدد الأزرار، لون جسم الكليكر، ثم اضغط على الكاب داخل المشهد لتغيير شكله أو لونه. في النهاية انسخ تفاصيل الطلب وأرسلها لنا.</p>
         <div class="hero-actions">
           <a class="primary-btn" href="#configurator">ابدأ التصميم</a>
-          <button class="secondary-btn" id="selectAllHero" type="button">تحديد كل الكابات</button>
+          <a class="secondary-btn" href="#steps">شاهد الخطوات</a>
         </div>
       </div>
-      <div class="hero-card">
-        <div class="mini-orbit" aria-hidden="true">
-          <span></span><span></span><span></span>
+      <div class="hero-card" aria-hidden="true">
+        <div class="mini-phone">
+          <span></span>
+          <b></b>
+          <i></i>
         </div>
-        <h2>RavenLab Custom Clicker</h2>
-        <p>ألوان الهوية: أسود، أبيض، وأخضر #9cc03d.</p>
+        <h2>مصمم مناسب للجوال</h2>
+        <p>معاينة في الأعلى وأدوات التعديل أسفلها.</p>
+      </div>
+    </section>
+
+    <section class="steps-intro" id="steps" aria-labelledby="stepsTitle">
+      <div class="steps-copy glass">
+        <span class="eyebrow">طريقة التصميم</span>
+        <h2 id="stepsTitle">اتبع الخطوات بالترتيب</h2>
+        <p>التصميم بسيط: اختر الكليكر، اضغط على الكابات التي تريد تعديلها من المشهد، ثم أكمل الطلب وانسخ التفاصيل.</p>
+      </div>
+      <div class="steps-list">
+        <article class="step-card glass"><b>1</b><h3>عدد الأزرار</h3><p>اختر من 1 إلى 9 أزرار.</p></article>
+        <article class="step-card glass"><b>2</b><h3>لون الكليكر</h3><p>غيّر لون جسم الكليكر مباشرة.</p></article>
+        <article class="step-card glass"><b>3</b><h3>حدد الكاب</h3><p>اضغط على الكاب داخل المشهد لتعديله.</p></article>
+        <article class="step-card glass"><b>4</b><h3>الشكل أو الحرف</h3><p>اختر سادة، حرف إنجليزي، أو شكل مميز.</p></article>
+        <article class="step-card glass"><b>5</b><h3>إكمال الطلب</h3><p>انسخ التفاصيل وأرسلها لنا.</p></article>
       </div>
     </section>
 
@@ -76,7 +93,7 @@
             <b>تحميل المجسم...</b>
           </div>
           <div class="scene-hint">
-            اسحب للدوران · عجلة الفأرة للتكبير · Shift/Ctrl لتحديد أكثر من كاب
+            على الجوال: اسحب للدوران · كبّر بإصبعين · اضغط على الكاب لتحديده
           </div>
         </div>
 
@@ -90,6 +107,10 @@
         <div class="panel-head">
           <span class="eyebrow">إعدادات المنتج</span>
           <h2>خصص الطلب</h2>
+        </div>
+
+        <div class="mobile-help">
+          ابدأ من الأعلى للأسفل. بعد اختيار الكاب من المشهد، استخدم الخيارات هنا لتغيير شكله أو لونه.
         </div>
 
         <section class="control-section">
@@ -119,11 +140,11 @@
         <section class="control-section cap-tools">
           <div class="section-title">
             <h3>3. الكابات</h3>
-            <span>اضغط على الكاب في المشهد</span>
+            <span>حدد من المشهد</span>
           </div>
           <div class="quick-actions">
-            <button id="selectAllCaps" type="button" class="small-btn">تحديد الكل</button>
-            <button id="selectNoneCaps" type="button" class="small-btn">إلغاء الكل</button>
+            <button id="selectAllCaps" type="button" class="small-btn">تحديد كل الكابات</button>
+            <button id="selectNoneCaps" type="button" class="small-btn">إلغاء التحديد</button>
           </div>
 
           <label class="field-label" for="capType">شكل الكاب</label>
@@ -131,7 +152,7 @@
 
           <div id="letterBox" class="letter-box">
             <label class="field-label" for="letterInput">الحرف الإنجليزي</label>
-            <input id="letterInput" class="input" type="text" maxlength="1" value="A" inputmode="latin" />
+            <input id="letterInput" class="input" type="text" maxlength="1" value="A" inputmode="latin" autocomplete="off" autocapitalize="characters" />
             <div class="letter-grid" id="letterGrid"></div>
           </div>
 
@@ -149,34 +170,40 @@
             <span class="eyebrow">السعر التقريبي</span>
             <strong id="priceText">0 IQD</strong>
           </div>
-          <button id="addToCart" class="primary-btn wide" type="button">إضافة إلى السلة</button>
+          <button id="completeOrder" class="primary-btn wide" type="button">إكمال الطلب</button>
         </section>
 
         <details class="json-box">
-          <summary>عرض JSON</summary>
+          <summary>عرض JSON للطلب</summary>
           <pre id="jsonPreview"></pre>
         </details>
       </aside>
     </section>
-
-    <section class="info-grid" id="how">
-      <article class="glass info-card">
-        <b>1</b>
-        <h3>اختر عدد الأزرار</h3>
-        <p>الموقع يحمل ملف القاعدة المناسب من ملفات GLB التي رفعتها.</p>
-      </article>
-      <article class="glass info-card">
-        <b>2</b>
-        <h3>حدد من المشهد</h3>
-        <p>اضغط على أي كاب مباشرة من العرض. استخدم Shift أو Ctrl لتحديد عدة كابات.</p>
-      </article>
-      <article class="glass info-card">
-        <b>3</b>
-        <h3>غيّر الشكل واللون</h3>
-        <p>أي تغيير يطبق فورًا على الكابات المحددة ويحفظ داخل JSON الطلب.</p>
-      </article>
-    </section>
   </main>
+
+  <div class="mobile-order-bar" aria-label="إكمال الطلب من الجوال">
+    <div>
+      <small>السعر التقريبي</small>
+      <strong id="mobilePriceText">0 IQD</strong>
+    </div>
+    <button id="completeOrderMobile" class="primary-btn" type="button">إكمال الطلب</button>
+  </div>
+
+  <div class="order-modal" id="orderModal" aria-hidden="true">
+    <div class="order-backdrop" data-close-order></div>
+    <section class="order-dialog" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+      <button class="modal-close" type="button" data-close-order aria-label="إغلاق">×</button>
+      <span class="eyebrow">تفاصيل الطلب</span>
+      <h2 id="orderTitle">انسخ التفاصيل وأرسلها لنا</h2>
+      <p>هذه الصيغة جاهزة للإرسال في واتساب أو إنستغرام أو أي تطبيق محادثة.</p>
+      <textarea id="orderDetails" class="order-details" readonly></textarea>
+      <div class="order-actions">
+        <button id="copyOrder" class="primary-btn" type="button">نسخ تفاصيل الطلب</button>
+        <button id="shareOrder" class="secondary-btn" type="button">مشاركة</button>
+        <button class="small-btn" type="button" data-close-order>إغلاق</button>
+      </div>
+    </section>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

@@ -49,7 +49,7 @@ const CONFIG = {
   ],
   keycaps: [
     { id: 'plain', label: 'سادة', category: 'plain', path: `${MODEL_DIR}keycap_letter.glb`, priceKey: 'plainKeycap', tintable: true },
-    { id: 'letter', label: 'حرف إنجليزي', category: 'letter', path: `${MODEL_DIR}keycap_letter.glb`, priceKey: 'letterKeycap', tintable: true },
+    { id: 'letter', label: 'حرف إنجليزي', category: 'letter', path: `${MODEL_DIR}keycap_g.glb`, priceKey: 'letterKeycap', tintable: true },
     { id: 'oreo', label: 'Oreo', category: 'special', path: `${MODEL_DIR}keycap_oreo.glb`, price: 3500, tintable: false },
     { id: 'strawberry', label: 'Strawberry', category: 'special', path: `${MODEL_DIR}keycap_Strawberry.glb`, price: 3500, tintable: false },
     { id: 'waffle', label: 'Waffle', category: 'special', path: `${MODEL_DIR}keycap_Waffle.glb`, price: 3500, tintable: false },
@@ -75,7 +75,13 @@ const els = {
   selectedText: $('#selectedText'),
   priceText: $('#priceText'),
   jsonPreview: $('#jsonPreview'),
-  addToCart: $('#addToCart'),
+  completeOrder: $('#completeOrder'),
+  completeOrderMobile: $('#completeOrderMobile'),
+  mobilePriceText: $('#mobilePriceText'),
+  orderModal: $('#orderModal'),
+  orderDetails: $('#orderDetails'),
+  copyOrder: $('#copyOrder'),
+  shareOrder: $('#shareOrder'),
   loader: $('#loader'),
   toast: $('#toast'),
   viewer: $('#viewer'),
@@ -104,6 +110,7 @@ let capObjects = [];
 let selectionHelpers = [];
 let modelCache = new Map();
 let lightRig;
+let pointerStart = null;
 
 initState();
 initTheme();
@@ -203,12 +210,19 @@ function initUI() {
     updateUI();
   });
   els.selectAllCaps.addEventListener('click', selectAllCaps);
-  els.selectAllHero.addEventListener('click', () => {
+  els.selectAllHero?.addEventListener('click', () => {
     document.querySelector('#configurator')?.scrollIntoView({ behavior: 'smooth' });
     selectAllCaps();
   });
   els.resetCamera.addEventListener('click', fitCameraToObject);
-  els.addToCart.addEventListener('click', addToCart);
+  els.completeOrder?.addEventListener('click', openOrderModal);
+  els.completeOrderMobile?.addEventListener('click', openOrderModal);
+  els.copyOrder?.addEventListener('click', copyOrderDetails);
+  els.shareOrder?.addEventListener('click', shareOrderDetails);
+  els.orderModal?.querySelectorAll('[data-close-order]').forEach((el) => el.addEventListener('click', closeOrderModal));
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeOrderModal();
+  });
 }
 
 function renderSwatches(container, colors, activeId, onClick) {
@@ -308,7 +322,8 @@ function initThree() {
   scene.add(grid);
 
   window.addEventListener('resize', resizeRenderer);
-  renderer.domElement.addEventListener('pointerdown', onPointerDown);
+  renderer.domElement.addEventListener('pointerdown', onPointerStart);
+  renderer.domElement.addEventListener('pointerup', onPointerEnd);
   renderer.domElement.addEventListener('pointermove', onPointerMove);
   resizeRenderer();
   animate();
@@ -605,7 +620,25 @@ function onPointerMove(event) {
   renderer.domElement.style.cursor = hit ? 'pointer' : 'grab';
 }
 
-function onPointerDown(event) {
+function onPointerStart(event) {
+  pointerStart = {
+    x: event.clientX,
+    y: event.clientY,
+    time: performance.now(),
+  };
+}
+
+function onPointerEnd(event) {
+  if (!pointerStart) return;
+  const distance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+  const elapsed = performance.now() - pointerStart.time;
+  pointerStart = null;
+  // اختيار الكاب يتم بالنقرة فقط. السحب لتدوير المجسم لا يغير التحديد، وهذا مهم للجوال.
+  if (distance > 10 || elapsed > 650) return;
+  selectCapFromEvent(event);
+}
+
+function selectCapFromEvent(event) {
   const hit = raycastCap(event);
   if (!hit) return;
   const index = hit.object.userData.capIndex;
@@ -727,8 +760,9 @@ function calculatePrice() {
 function buildOrderJson() {
   return {
     brand: CONFIG.brand.name,
+    product: 'Custom Switch Clicker',
     switches: state.count,
-    layout: state.layout,
+    layout: getLayoutLabel(),
     baseColor: state.baseColor.name,
     keycaps: state.caps.map((cap, index) => {
       const def = getCapDef(cap.type);
@@ -744,6 +778,68 @@ function buildOrderJson() {
     price: calculatePrice(),
     currency: 'IQD',
   };
+}
+
+function getLayoutLabel() {
+  return CONFIG.bases[state.count]?.[state.layout]?.label || state.layout;
+}
+
+function createOrderMessage(order = buildOrderJson()) {
+  const keycapLines = order.keycaps.map((cap) => {
+    let details = '';
+    if (cap.type === 'letter') details = `حرف ${cap.letter} - لون ${cap.color}`;
+    else if (cap.type === 'plain') details = `سادة - لون ${cap.color}`;
+    else details = cap.design;
+    return `${cap.slot}. ${details}`;
+  }).join('\n');
+
+  return `طلب كليكر مخصص من RavenLab\n\n` +
+    `عدد الأزرار: ${order.switches}\n` +
+    `شكل القاعدة: ${order.layout}\n` +
+    `لون الكليكر: ${order.baseColor}\n\n` +
+    `الكابات:\n${keycapLines}\n\n` +
+    `السعر التقريبي: ${order.price.toLocaleString('en-US')} IQD\n\n` +
+    `بيانات الطلب JSON:\n${JSON.stringify(order, null, 2)}`;
+}
+
+function openOrderModal() {
+  const order = buildOrderJson();
+  localStorage.setItem('ravenlab-last-order', JSON.stringify(order));
+  if (els.orderDetails) els.orderDetails.value = createOrderMessage(order);
+  els.orderModal?.classList.add('show');
+  els.orderModal?.setAttribute('aria-hidden', 'false');
+  setTimeout(() => els.orderDetails?.focus(), 50);
+}
+
+function closeOrderModal() {
+  els.orderModal?.classList.remove('show');
+  els.orderModal?.setAttribute('aria-hidden', 'true');
+}
+
+async function copyOrderDetails() {
+  const text = els.orderDetails?.value || createOrderMessage();
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('تم نسخ تفاصيل الطلب. أرسلها لنا لإكمال الطلب.');
+  } catch (error) {
+    els.orderDetails?.select();
+    document.execCommand?.('copy');
+    showToast('تم تحديد تفاصيل الطلب. انسخها يدويًا إن لم تُنسخ تلقائيًا.');
+  }
+}
+
+async function shareOrderDetails() {
+  const text = els.orderDetails?.value || createOrderMessage();
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'طلب RavenLab', text });
+      return;
+    } catch (error) {
+      // المستخدم قد يلغي المشاركة، لذلك لا نعرض خطأ.
+      return;
+    }
+  }
+  await copyOrderDetails();
 }
 
 function updateUI() {
@@ -770,17 +866,10 @@ function updateUI() {
 
   const price = calculatePrice();
   els.priceText.textContent = `${price.toLocaleString('en-US')} IQD`;
+  if (els.mobilePriceText) els.mobilePriceText.textContent = `${price.toLocaleString('en-US')} IQD`;
   els.jsonPreview.textContent = JSON.stringify(buildOrderJson(), null, 2);
 }
 
-function addToCart() {
-  const order = buildOrderJson();
-  const cart = JSON.parse(localStorage.getItem('ravenlab-cart') || '[]');
-  cart.push(order);
-  localStorage.setItem('ravenlab-cart', JSON.stringify(cart));
-  navigator.clipboard?.writeText(JSON.stringify(order, null, 2)).catch(() => {});
-  showToast('تمت إضافة التصميم إلى السلة ونسخ JSON للطلب.');
-}
 
 function setLoading(isLoading) {
   els.loader.classList.toggle('show', isLoading);

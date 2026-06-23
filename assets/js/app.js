@@ -263,7 +263,7 @@ function initThree() {
   scene.fog = new THREE.FogExp2(0x0b0d08, 0.026);
   camera = new THREE.PerspectiveCamera(35, 1, 0.01, 220);
   // أبعدنا الكاميرا الافتراضية حتى لا تبدأ داخل مجسم الكليكر.
-  camera.position.set(100, 25, 100);
+  camera.position.set(25, 12, 225);
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -569,7 +569,7 @@ function fitCameraToObject(animateTarget = true) {
   // حساب مسافة آمنة بناءً على حجم المجسم وزاوية الكاميرا، مع مساحة تنفس كبيرة حوله.
   const verticalFov = THREE.MathUtils.degToRad(camera.fov);
   const fitDistance = (maxDim / 2) / Math.tan(verticalFov / 2);
-  const distance = fitDistance * 300.0;
+  const distance = fitDistance * 50.0;
   const direction = new THREE.Vector3(1, 0.55, 1).normalize();
 
   camera.position.copy(center).add(direction.multiplyScalar(distance));

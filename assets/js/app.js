@@ -258,14 +258,16 @@ function initThree() {
 
   scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x0b0d08, 0.026);
-  camera = new THREE.PerspectiveCamera(35, 1, 0.01, 150);
-  camera.position.set(4.8, 3.8, 5.4);
+  camera = new THREE.PerspectiveCamera(35, 1, 0.01, 220);
+  // أبعدنا الكاميرا الافتراضية حتى لا تبدأ داخل مجسم الكليكر.
+  camera.position.set(8.5, 5.5, 8.5);
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
-  controls.minDistance = 1.7;
-  controls.maxDistance = 18;
+  // منع الزوم من الدخول داخل المجسم. يتم تحديثها أيضًا بعد تحميل كل قاعدة.
+  controls.minDistance = 3.5;
+  controls.maxDistance = 60;
   controls.target.set(0, 0, 0);
 
   loader = new GLTFLoader();
@@ -556,15 +558,25 @@ function fitCameraToObject(animateTarget = true) {
   if (!assemblyGroup) return;
   const box = new THREE.Box3().setFromObject(assemblyGroup);
   if (box.isEmpty()) return;
+
   const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
   const maxDim = Math.max(size.x, size.y, size.z, 1);
-  const distance = maxDim * 2.45;
-  camera.position.set(center.x + distance, center.y + distance * 0.72, center.z + distance);
-  camera.near = Math.max(distance / 100, 0.01);
-  camera.far = distance * 100;
+
+  // حساب مسافة آمنة بناءً على حجم المجسم وزاوية الكاميرا، مع مساحة تنفس كبيرة حوله.
+  const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+  const fitDistance = (maxDim / 2) / Math.tan(verticalFov / 2);
+  const distance = fitDistance * 3.0;
+  const direction = new THREE.Vector3(1, 0.55, 1).normalize();
+
+  camera.position.copy(center).add(direction.multiplyScalar(distance));
+  camera.near = Math.max(distance / 250, 0.01);
+  camera.far = Math.max(distance * 80, 220);
   camera.updateProjectionMatrix();
+
   controls.target.copy(center);
+  controls.minDistance = Math.max(fitDistance * 1.45, maxDim * 2.0, 2.8);
+  controls.maxDistance = Math.max(distance * 4.5, 60);
   controls.update();
 }
 

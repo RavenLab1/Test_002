@@ -48,13 +48,16 @@ const CONFIG = {
     { id: 'transparent', name: 'شفاف', hex: '#ffffff', transparent: true },
   ],
   keycaps: [
+    // يستخدم هذا الملف ككاب سادة / احتياطي.
     { id: 'plain', label: 'سادة', category: 'plain', path: `${MODEL_DIR}keycap_letter.glb`, priceKey: 'plainKeycap', tintable: true },
-    { id: 'letter', label: 'حرف إنجليزي', category: 'letter', path: `${MODEL_DIR}keycap_g.glb`, priceKey: 'letterKeycap', tintable: true },
+    // كابات الحروف ليست Sprite أو طباعة برمجية: كل حرف يستخدم ملفه الخاص مثل keycap_a.glb و keycap_g.glb.
+    { id: 'letter', label: 'حرف إنجليزي', category: 'letter', pathTemplate: `${MODEL_DIR}keycap_{letter}.glb`, fallbackPath: `${MODEL_DIR}keycap_letter.glb`, priceKey: 'letterKeycap', tintable: true },
     { id: 'oreo', label: 'Oreo', category: 'special', path: `${MODEL_DIR}keycap_oreo.glb`, price: 3500, tintable: false },
     { id: 'strawberry', label: 'Strawberry', category: 'special', path: `${MODEL_DIR}keycap_Strawberry.glb`, price: 3500, tintable: false },
     { id: 'waffle', label: 'Waffle', category: 'special', path: `${MODEL_DIR}keycap_Waffle.glb`, price: 3500, tintable: false },
     { id: 'chocolate', label: 'Chocolate', category: 'special', path: `${MODEL_DIR}keycap_CHOCOLATE.glb`, price: 3000, tintable: false },
   ],
+  availableLetterKeycaps: ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'],
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -187,9 +190,17 @@ function initUI() {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.textContent = letter;
+    const hasModel = hasLetterModel(letter);
+    if (!hasModel) {
+      btn.classList.add('soft-disabled');
+      btn.title = `لا يوجد ملف keycap_${letter.toLowerCase()}.glb حاليًا، سيتم استخدام الكاب الاحتياطي.`;
+    } else {
+      btn.title = `يستخدم ملف keycap_${letter.toLowerCase()}.glb`;
+    }
     btn.addEventListener('click', () => {
       els.letterInput.value = letter;
       applyToSelectedCaps({ letter, type: 'letter' });
+      if (!hasModel) showToast(`لا يوجد keycap_${letter.toLowerCase()}.glb، استخدمنا كاب احتياطي مع الحرف.`);
     });
     els.letterGrid.appendChild(btn);
   });
@@ -409,6 +420,28 @@ function loadScene(path) {
   });
 }
 
+async function loadCapScene(def, capConfig) {
+  const primaryPath = resolveCapPath(def, capConfig);
+  try {
+    return { scene: await loadScene(primaryPath), path: primaryPath, usedFallback: false };
+  } catch (primaryError) {
+    if (!def.fallbackPath || def.fallbackPath === primaryPath) throw primaryError;
+    return { scene: await loadScene(def.fallbackPath), path: def.fallbackPath, usedFallback: true };
+  }
+}
+
+function resolveCapPath(def, capConfig) {
+  if (def.category === 'letter' && def.pathTemplate) {
+    const letter = sanitizeLetter(capConfig.letter || 'A').toLowerCase();
+    return def.pathTemplate.replace('{letter}', letter);
+  }
+  return def.path;
+}
+
+function hasLetterModel(letter) {
+  return CONFIG.availableLetterKeycaps.includes(sanitizeLetter(letter));
+}
+
 function cloneScene(source) {
   const clone = source.clone(true);
   clone.traverse((obj) => {
@@ -458,9 +491,10 @@ function makeFallbackSlot(i, count, spacing = 0.85, y = 0.1) {
 
 async function createCapObject(capConfig, index, slot) {
   const def = getCapDef(capConfig.type);
-  const source = await loadScene(def.path);
-  const model = cloneScene(source);
+  const loaded = await loadCapScene(def, capConfig);
+  const model = cloneScene(loaded.scene);
   model.name = `cap_model_${index + 1}`;
+  model.userData.sourcePath = loaded.path;
 
   const group = new THREE.Group();
   group.name = `cap_${index + 1}`;
@@ -482,7 +516,9 @@ async function createCapObject(capConfig, index, slot) {
   normalizeCap(model, def);
   applyCapMaterial(model, capConfig, def);
 
-  if (def.category === 'letter') {
+  // في الحالة الطبيعية لا نضيف حرفًا برمجيًا، لأن ملف keycap_a/keycap_g يحتوي الحرف فعليًا.
+  // نستخدم Sprite فقط عند عدم وجود ملف الحرف المطلوب، حتى لا يظهر الكاب فارغًا.
+  if (def.category === 'letter' && loaded.usedFallback) {
     group.add(createLetterSprite(capConfig.letter || 'A', capConfig.textColor || '#111111'));
   }
 
@@ -533,16 +569,37 @@ function applyCapMaterial(model, capConfig, def) {
   if (!def.tintable) return;
   const color = capConfig.color || '#ffffff';
   const transparent = capConfig.transparent || color === 'transparent';
+  const tintMaterial = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(color === 'transparent' ? '#ffffff' : color),
+    roughness: 0.52,
+    metalness: 0.02,
+    transparent,
+    opacity: transparent ? 0.48 : 1,
+    envMapIntensity: 0.8,
+  });
+
+  const meshes = [];
   model.traverse((obj) => {
-    if (!obj.isMesh) return;
-    obj.material = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(color === 'transparent' ? '#ffffff' : color),
-      roughness: 0.52,
-      metalness: 0.02,
-      transparent,
-      opacity: transparent ? 0.48 : 1,
-      envMapIntensity: 0.8,
+    if (obj.isMesh) meshes.push(obj);
+  });
+
+  // كابات الحروف تحتوي حرفًا داخل ملف GLB. لذلك نحاول تلوين جسم الكاب فقط
+  // ونترك تفاصيل الحرف/الطباعة الصغيرة كما هي إن كانت Mesh منفصلة.
+  if (def.category === 'letter' && meshes.length > 1) {
+    const scored = meshes.map((mesh) => {
+      const box = new THREE.Box3().setFromObject(mesh);
+      const size = box.getSize(new THREE.Vector3());
+      return { mesh, score: Math.max(size.x * size.y * size.z, 0) };
     });
+    const maxScore = Math.max(...scored.map(item => item.score), 0);
+    scored.forEach(({ mesh, score }) => {
+      if (score >= maxScore * 0.35) mesh.material = tintMaterial.clone();
+    });
+    return;
+  }
+
+  meshes.forEach((mesh) => {
+    mesh.material = tintMaterial.clone();
   });
 }
 
@@ -772,6 +829,7 @@ function buildOrderJson() {
         design: def.label,
         color: def.tintable ? (cap.colorName || cap.color || 'أبيض') : 'original',
         letter: def.category === 'letter' ? (cap.letter || 'A') : null,
+        modelFile: def.category === 'letter' ? `keycap_${String(cap.letter || 'A').toLowerCase()}.glb` : resolveCapPath(def, cap).split('/').pop(),
         price: def.price !== undefined ? def.price : (CONFIG.prices[def.priceKey] || 0),
       };
     }),
@@ -787,19 +845,24 @@ function getLayoutLabel() {
 function createOrderMessage(order = buildOrderJson()) {
   const keycapLines = order.keycaps.map((cap) => {
     let details = '';
-    if (cap.type === 'letter') details = `حرف ${cap.letter} - لون ${cap.color}`;
-    else if (cap.type === 'plain') details = `سادة - لون ${cap.color}`;
-    else details = cap.design;
-    return `${cap.slot}. ${details}`;
+    if (cap.type === 'letter') details = `حرف ${cap.letter} — لون الكاب: ${cap.color} — ملف المجسم: keycap_${String(cap.letter || 'A').toLowerCase()}.glb`;
+    else if (cap.type === 'plain') details = `سادة — لون الكاب: ${cap.color}`;
+    else details = `${cap.design} — لون التصميم الأصلي`;
+    return `كاب ${cap.slot}: ${details}`;
   }).join('\n');
 
-  return `طلب كليكر مخصص من RavenLab\n\n` +
+  return `طلب كليكر مخصص من RavenLab\n` +
+    `------------------------------\n` +
     `عدد الأزرار: ${order.switches}\n` +
     `شكل القاعدة: ${order.layout}\n` +
     `لون الكليكر: ${order.baseColor}\n\n` +
-    `الكابات:\n${keycapLines}\n\n` +
-    `السعر التقريبي: ${order.price.toLocaleString('en-US')} IQD\n\n` +
-    `بيانات الطلب JSON:\n${JSON.stringify(order, null, 2)}`;
+    `تفاصيل الكابات:\n${keycapLines}\n\n` +
+    `السعر التقريبي: ${order.price.toLocaleString('en-US')} IQD\n` +
+    `------------------------------\n` +
+    `اسم العميل:\n` +
+    `رقم الهاتف:\n` +
+    `العنوان / طريقة الاستلام:\n` +
+    `ملاحظات إضافية:`;
 }
 
 function openOrderModal() {
@@ -867,7 +930,7 @@ function updateUI() {
   const price = calculatePrice();
   els.priceText.textContent = `${price.toLocaleString('en-US')} IQD`;
   if (els.mobilePriceText) els.mobilePriceText.textContent = `${price.toLocaleString('en-US')} IQD`;
-  els.jsonPreview.textContent = JSON.stringify(buildOrderJson(), null, 2);
+  els.jsonPreview.textContent = createOrderMessage(buildOrderJson());
 }
 
 

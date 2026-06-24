@@ -40,8 +40,8 @@
     <section class="hero">
       <div class="hero-copy">
         <span class="eyebrow">RavenLab 3D Configurator</span>
-        <h1>صمم كليكر السويتشات من جوالك.</h1>
-        <p>اختر عدد الأزرار، لون جسم الكليكر، ثم اضغط على الكاب داخل المشهد لتغيير شكله أو لونه. في النهاية انسخ تفاصيل الطلب وأرسلها لنا.</p>
+        <h1>صمم كليكر RavenLab بسهولة.</h1>
+        <p>اختيار بسيط من الجوال: اختر عدد الأزرار، اختر اللون، اضغط على الكاب، ثم أكمل الطلب.</p>
         <div class="hero-actions">
           <a class="primary-btn" href="#configurator">ابدأ التصميم</a>
           <a class="secondary-btn" href="#steps">شاهد الخطوات</a>
@@ -61,8 +61,8 @@
     <section class="steps-intro" id="steps" aria-labelledby="stepsTitle">
       <div class="steps-copy glass">
         <span class="eyebrow">طريقة التصميم</span>
-        <h2 id="stepsTitle">اتبع الخطوات بالترتيب</h2>
-        <p>التصميم بسيط: اختر الكليكر، اضغط على الكابات التي تريد تعديلها من المشهد، ثم أكمل الطلب وانسخ التفاصيل.</p>
+        <h2 id="stepsTitle">خطوات سهلة وواضحة</h2>
+        <p>اختر من الأعلى للأسفل. لا تحتاج تعرف 3D؛ فقط اضغط على الكاب الذي تريد تغييره.</p>
       </div>
       <div class="steps-list">
         <article class="step-card glass"><b>1</b><h3>عدد الأزرار</h3><p>اختر من 1 إلى 9 أزرار.</p></article>
@@ -74,15 +74,23 @@
     </section>
 
     <section class="configurator" id="configurator">
+      <div class="mobile-simple-guide glass" aria-label="شرح خطوات التصميم على الجوال">
+        <strong>صمم طلبك بثلاث لمسات</strong>
+        <div class="simple-step-row">
+          <span><b>1</b> اختر عدد الأزرار</span>
+          <span><b>2</b> اختر اللون</span>
+          <span><b>3</b> اضغط على الكاب وغير شكله</span>
+        </div>
+      </div>
       <div class="scene-panel glass">
         <div class="scene-toolbar">
           <div>
             <span class="eyebrow">المعاينة الحية</span>
-            <h2>اضغط على الكاب لتحديده</h2>
+            <h2>المعاينة ثابتة هنا</h2>
           </div>
           <div class="scene-tools">
-            <button id="resetCamera" type="button" class="small-btn">إعادة الكاميرا</button>
-            <button id="clearSelection" type="button" class="small-btn">مسح التحديد</button>
+            <button id="resetCamera" type="button" class="small-btn">رتّب المشهد</button>
+            <button id="clearSelection" type="button" class="small-btn">إلغاء</button>
           </div>
         </div>
 
@@ -92,8 +100,9 @@
             <span class="spinner"></span>
             <b>تحميل المجسم...</b>
           </div>
+          <div class="scene-watermark">RavenLab</div>
           <div class="scene-hint">
-            على الجوال: اسحب للدوران · كبّر بإصبعين · اضغط على الكاب لتحديده
+            اسحب للدوران · اضغط على كاب لتغييره
           </div>
         </div>
 
@@ -110,7 +119,7 @@
         </div>
 
         <div class="mobile-help">
-          ابدأ من الأعلى للأسفل. بعد اختيار الكاب من المشهد، استخدم الخيارات هنا لتغيير شكله أو لونه.
+          ابدأ من رقم 1 ثم 2 ثم 3. لتغيير كاب: اضغط عليه من الصورة بالأعلى، ثم اختر شكله هنا.
         </div>
 
         <section class="control-section">
@@ -143,8 +152,8 @@
             <span>حدد من المشهد</span>
           </div>
           <div class="quick-actions">
-            <button id="selectAllCaps" type="button" class="small-btn">تحديد كل الكابات</button>
-            <button id="selectNoneCaps" type="button" class="small-btn">إلغاء التحديد</button>
+            <button id="selectAllCaps" type="button" class="small-btn">اختيار كل الكابات</button>
+            <button id="selectNoneCaps" type="button" class="small-btn">إلغاء الاختيار</button>
           </div>
 
           <label class="field-label" for="capType">شكل الكاب</label>
@@ -174,7 +183,7 @@
         </section>
 
         <details class="json-box summary-details">
-          <summary>عرض ملخص الطلب</summary>
+          <summary>عرض تفاصيل الطلب</summary>
           <pre id="jsonPreview"></pre>
         </details>
       </aside>
@@ -195,7 +204,7 @@
       <button class="modal-close" type="button" data-close-order aria-label="إغلاق">×</button>
       <span class="eyebrow">تفاصيل الطلب</span>
       <h2 id="orderTitle">انسخ التفاصيل وأرسلها لنا</h2>
-      <p>هذه الصيغة جاهزة للإرسال في واتساب أو إنستغرام أو أي تطبيق محادثة.</p>
+      <p>هذه الصيغة جاهزة للإرسال في واتساب أو إنستغرام. <strong>السعر النهائي يتم تأكيده من RavenLab بعد مراجعة الطلب.</strong></p>
       <textarea id="orderDetails" class="order-details" readonly></textarea>
       <div class="order-actions">
         <button id="copyOrder" class="primary-btn" type="button">نسخ تفاصيل الطلب</button>
@@ -206,6 +215,14 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="security-lock" id="securityLock" hidden>
+    <div class="security-card">
+      <span class="brand-mark">R</span>
+      <h2>RavenLab Configurator</h2>
+      <p>هذه النسخة مخصصة لـ RavenLab فقط. لا يمكن تشغيلها على دومين غير مصرح.</p>
+    </div>
+  </div>
 
   <script type="module" src="assets/js/app.js"></script>
 </body>

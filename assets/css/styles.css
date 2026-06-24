@@ -631,3 +631,18 @@ pre { direction: ltr; text-align: left; white-space: pre-wrap; color: var(--mute
   }
   .modal-close { left: 12px; top: 12px; }
 }
+
+/* RavenLab update: scene preview scrolls normally instead of staying fixed/sticky */
+.scene-panel {
+  position: relative !important;
+  top: auto !important;
+  z-index: auto;
+}
+
+@media (max-width: 720px) {
+  .scene-panel {
+    position: relative !important;
+    top: auto !important;
+    z-index: auto;
+  }
+}

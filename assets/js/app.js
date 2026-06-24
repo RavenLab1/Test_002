@@ -10,12 +10,12 @@ const CONFIG = {
     accent: '#9cc03d',
   },
   security: {
-    enabled: true,
-    // عدّل هذه القائمة عند نقل الموقع إلى دومين رسمي.
-    // github.io مسموح مؤقتًا حتى لا يتعطل GitHub Pages أثناء التجربة.
+    // مفتوح للجميع: لا يوجد قفل دومين.
+    // أبقينا هذا القسم فقط للعودة إليه مستقبلًا إذا احتجت حماية الدومين.
+    enabled: false,
     allowGithubPages: true,
-    allowedHostnames: ['', 'localhost', '127.0.0.1', 'ravenlab.github.io', 'raven-lab.github.io', 'ravenlab.store', 'ravenlab.shop', 'ravenlab.iq'],
-    allowedContains: ['ravenlab', 'raven-lab'],
+    allowedHostnames: [],
+    allowedContains: [],
   },
   basePrice: 5000,
   prices: {

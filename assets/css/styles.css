@@ -387,7 +387,6 @@ pre { direction: ltr; text-align: left; white-space: pre-wrap; color: var(--mute
   backdrop-filter: blur(10px);
   pointer-events: none;
 }
-.security-lock {
   position: fixed;
   inset: 0;
   z-index: 9999;
@@ -397,7 +396,6 @@ pre { direction: ltr; text-align: left; white-space: pre-wrap; color: var(--mute
   background: radial-gradient(circle at center, color-mix(in srgb, var(--brand) 18%, transparent), transparent 42%), #050604;
   color: white;
 }
-.security-card {
   width: min(460px, 100%);
   text-align: center;
   border: 1px solid rgba(255,255,255,.16);
@@ -407,10 +405,6 @@ pre { direction: ltr; text-align: left; white-space: pre-wrap; color: var(--mute
   box-shadow: 0 28px 90px rgba(0,0,0,.42);
   backdrop-filter: blur(18px);
 }
-.security-card .brand-mark { margin: 0 auto 16px; }
-.security-card h2 { margin: 0 0 10px; }
-.security-card p { margin: 0; color: rgba(255,255,255,.72); line-height: 1.8; }
-.site-blocked > *:not(.security-lock) { display: none !important; }
 
 @media (max-width: 720px) {
   html { scroll-padding-top: 76px; }

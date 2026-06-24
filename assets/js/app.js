@@ -9,6 +9,14 @@ const CONFIG = {
     name: 'RavenLab',
     accent: '#9cc03d',
   },
+  security: {
+    enabled: true,
+    // عدّل هذه القائمة عند نقل الموقع إلى دومين رسمي.
+    // github.io مسموح مؤقتًا حتى لا يتعطل GitHub Pages أثناء التجربة.
+    allowGithubPages: true,
+    allowedHostnames: ['', 'localhost', '127.0.0.1', 'ravenlab.github.io', 'raven-lab.github.io', 'ravenlab.store', 'ravenlab.shop', 'ravenlab.iq'],
+    allowedContains: ['ravenlab', 'raven-lab'],
+  },
   basePrice: 5000,
   prices: {
     switchSeat: 2500,
@@ -94,6 +102,7 @@ const els = {
   selectAllCaps: $('#selectAllCaps'),
   selectNoneCaps: $('#selectNoneCaps'),
   selectAllHero: $('#selectAllHero'),
+  securityLock: $('#securityLock'),
 };
 
 const state = {
@@ -115,12 +124,31 @@ let modelCache = new Map();
 let lightRig;
 let pointerStart = null;
 
-initState();
-initTheme();
-initUI();
-initThree();
-buildProduct();
-updateUI();
+if (initSecurity()) {
+  initState();
+  initTheme();
+  initUI();
+  initThree();
+  buildProduct();
+  updateUI();
+}
+
+function initSecurity() {
+  const sec = CONFIG.security || {};
+  if (!sec.enabled) return true;
+  const host = window.location.hostname.toLowerCase();
+  const allowedByName = (sec.allowedHostnames || []).map(h => h.toLowerCase()).includes(host);
+  const allowedByContains = (sec.allowedContains || []).some(part => part && host.includes(part.toLowerCase()));
+  const allowedGithub = !!sec.allowGithubPages && host.endsWith('.github.io');
+  const allowedLocal = host === '' || host === 'localhost' || host === '127.0.0.1';
+  const allowed = allowedLocal || allowedByName || allowedByContains || allowedGithub;
+  if (!allowed) {
+    document.body.classList.add('site-blocked');
+    els.securityLock?.removeAttribute('hidden');
+    return false;
+  }
+  return true;
+}
 
 function initState() {
   state.caps = createDefaultCaps(state.count);
@@ -757,7 +785,7 @@ function selectAllCaps() {
 
 function applyToSelectedCaps(patch) {
   if (state.selected.size === 0) {
-    showToast('حدد كاب واحد على الأقل من المشهد أولًا.');
+    showToast('اضغط على الكاب من الصورة بالأعلى أولًا.');
     return;
   }
   const safePatch = { ...patch };
@@ -857,13 +885,16 @@ function createOrderMessage(order = buildOrderJson()) {
     `شكل القاعدة: ${order.layout}\n` +
     `لون الكليكر: ${order.baseColor}\n\n` +
     `تفاصيل الكابات:\n${keycapLines}\n\n` +
-    `السعر التقريبي: ${order.price.toLocaleString('en-US')} IQD\n` +
+    `السعر الظاهر في الموقع: ${order.price.toLocaleString('en-US')} IQD تقريبًا\n` +
+    `ملاحظة: السعر النهائي يتم تأكيده من RavenLab بعد مراجعة الطلب.\n` +
+    `أي تعديل يدوي على تفاصيل الطلب لا يُعتمد إلا بعد مراجعة RavenLab.\n` +
     `------------------------------\n` +
     `اسم العميل:\n` +
     `رقم الهاتف:\n` +
     `العنوان / طريقة الاستلام:\n` +
     `ملاحظات إضافية:`;
 }
+
 
 function openOrderModal() {
   const order = buildOrderJson();
@@ -928,7 +959,7 @@ function updateUI() {
   });
 
   const price = calculatePrice();
-  els.priceText.textContent = `${price.toLocaleString('en-US')} IQD`;
+  els.priceText.textContent = `${price.toLocaleString('en-US')} IQD تقريبًا`;
   if (els.mobilePriceText) els.mobilePriceText.textContent = `${price.toLocaleString('en-US')} IQD`;
   els.jsonPreview.textContent = createOrderMessage(buildOrderJson());
 }

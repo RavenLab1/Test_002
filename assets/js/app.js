@@ -9,14 +9,6 @@ const CONFIG = {
     name: 'RavenLab',
     accent: '#9cc03d',
   },
-  security: {
-    // مفتوح للجميع: لا يوجد قفل دومين.
-    // أبقينا هذا القسم فقط للعودة إليه مستقبلًا إذا احتجت حماية الدومين.
-    enabled: false,
-    allowGithubPages: true,
-    allowedHostnames: [],
-    allowedContains: [],
-  },
   basePrice: 5000,
   prices: {
     switchSeat: 2500,
@@ -102,7 +94,6 @@ const els = {
   selectAllCaps: $('#selectAllCaps'),
   selectNoneCaps: $('#selectNoneCaps'),
   selectAllHero: $('#selectAllHero'),
-  securityLock: $('#securityLock'),
 };
 
 const state = {
@@ -124,31 +115,12 @@ let modelCache = new Map();
 let lightRig;
 let pointerStart = null;
 
-if (initSecurity()) {
-  initState();
-  initTheme();
-  initUI();
-  initThree();
-  buildProduct();
-  updateUI();
-}
-
-function initSecurity() {
-  const sec = CONFIG.security || {};
-  if (!sec.enabled) return true;
-  const host = window.location.hostname.toLowerCase();
-  const allowedByName = (sec.allowedHostnames || []).map(h => h.toLowerCase()).includes(host);
-  const allowedByContains = (sec.allowedContains || []).some(part => part && host.includes(part.toLowerCase()));
-  const allowedGithub = !!sec.allowGithubPages && host.endsWith('.github.io');
-  const allowedLocal = host === '' || host === 'localhost' || host === '127.0.0.1';
-  const allowed = allowedLocal || allowedByName || allowedByContains || allowedGithub;
-  if (!allowed) {
-    document.body.classList.add('site-blocked');
-    els.securityLock?.removeAttribute('hidden');
-    return false;
-  }
-  return true;
-}
+initState();
+initTheme();
+initUI();
+initThree();
+buildProduct();
+updateUI();
 
 function initState() {
   state.caps = createDefaultCaps(state.count);
@@ -975,3 +947,5 @@ function showToast(message) {
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(() => els.toast.classList.remove('show'), 2600);
 }
+
+console.info('RavenLab configurator unlocked build - no domain lock');

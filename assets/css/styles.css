@@ -370,3 +370,270 @@ pre { direction: ltr; text-align: left; white-space: pre-wrap; color: var(--mute
   white-space: pre-wrap;
   line-height: 1.75;
 }
+
+/* RavenLab mobile-first simplification update */
+.mobile-simple-guide { display: none; }
+.scene-watermark {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.42);
+  color: rgba(255,255,255,.92);
+  font-weight: 900;
+  letter-spacing: .04em;
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+.security-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--brand) 18%, transparent), transparent 42%), #050604;
+  color: white;
+}
+.security-card {
+  width: min(460px, 100%);
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 28px;
+  padding: 32px 24px;
+  background: rgba(255,255,255,.08);
+  box-shadow: 0 28px 90px rgba(0,0,0,.42);
+  backdrop-filter: blur(18px);
+}
+.security-card .brand-mark { margin: 0 auto 16px; }
+.security-card h2 { margin: 0 0 10px; }
+.security-card p { margin: 0; color: rgba(255,255,255,.72); line-height: 1.8; }
+.site-blocked > *:not(.security-lock) { display: none !important; }
+
+@media (max-width: 720px) {
+  html { scroll-padding-top: 76px; }
+  body { background: var(--bg-2); }
+
+  .site-header {
+    position: fixed;
+    left: 9px;
+    right: 9px;
+    width: auto;
+    margin: 0;
+    top: max(8px, env(safe-area-inset-top, 0px));
+    z-index: 100;
+  }
+
+  main { padding-top: 68px; }
+  .hero { margin-top: 8px; }
+  .hero-copy {
+    padding: 18px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+  }
+  .eyebrow { font-size: 11px; }
+  h1 { font-size: clamp(30px, 9.5vw, 40px); }
+  .hero p { font-size: 15px; }
+  .secondary-btn { display: none; }
+
+  .steps-intro { display: none; }
+
+  .mobile-simple-guide {
+    display: block;
+    grid-column: 1 / -1;
+    padding: 14px;
+    border-radius: 20px;
+    margin-bottom: 0;
+    box-shadow: var(--shadow-soft);
+  }
+  .mobile-simple-guide strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 17px;
+  }
+  .simple-step-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .simple-step-row span {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--brand) 11%, transparent);
+    font-weight: 900;
+  }
+  .simple-step-row b {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: var(--brand);
+    color: #10120d;
+    flex: 0 0 auto;
+  }
+
+  .configurator {
+    width: calc(100% - 14px);
+    margin-top: 10px;
+    gap: 10px;
+  }
+
+  .scene-panel {
+    position: sticky;
+    top: calc(66px + env(safe-area-inset-top, 0px));
+    z-index: 60;
+    padding: 8px;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--card-solid) 94%, transparent);
+    box-shadow: 0 16px 42px rgba(0,0,0,.18);
+  }
+  .scene-toolbar { gap: 8px; }
+  .scene-toolbar .eyebrow { display: none; }
+  .scene-toolbar h2 { font-size: 16px; margin: 0; }
+  .scene-tools .small-btn { min-height: 34px; padding: 7px 9px; font-size: 11px; }
+  .canvas-wrap {
+    height: 34svh;
+    min-height: 230px;
+    max-height: 330px;
+    margin-top: 8px;
+    border-radius: 16px;
+  }
+  .scene-hint {
+    font-size: 11px;
+    padding: 8px;
+    bottom: 6px;
+    left: 6px;
+    right: 6px;
+    border-radius: 11px;
+  }
+  .scene-watermark {
+    top: 8px;
+    right: 8px;
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+  .selected-strip {
+    font-size: 12px;
+    padding: 8px 10px;
+    margin-top: 7px;
+  }
+
+  .controls-panel {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+  .panel-head { display: none; }
+  .mobile-help {
+    margin: 4px 0 10px;
+    padding: 13px 14px;
+    border-radius: 18px;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .control-section {
+    padding: 16px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: var(--card);
+    box-shadow: var(--shadow-soft);
+  }
+  .section-title h3 {
+    font-size: 20px;
+    margin: 0;
+  }
+  .section-title span {
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--brand) 16%, transparent);
+    color: var(--text);
+    font-size: 12px;
+  }
+  .button-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .option-btn {
+    min-height: 58px;
+    border-radius: 18px;
+    font-size: 20px;
+  }
+  .segmented .option-btn { font-size: 17px; }
+  .swatches {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .swatch { min-height: 58px; border-radius: 18px; }
+  .quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .quick-actions .small-btn {
+    min-height: 50px;
+    border-radius: 16px;
+    font-size: 14px;
+  }
+  .field-label { margin-top: 12px; font-size: 15px; }
+  .input { min-height: 58px; font-size: 17px; border-radius: 18px; }
+  .letter-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .letter-grid button {
+    min-height: 48px;
+    font-size: 17px;
+    border-radius: 14px;
+  }
+  .summary-card, .summary-details { display: none; }
+
+  .mobile-order-bar {
+    left: 8px;
+    right: 8px;
+    bottom: calc(8px + var(--safe-bottom));
+    border-radius: 20px;
+    padding: 10px 10px 10px 12px;
+    z-index: 120;
+  }
+  .mobile-order-bar .primary-btn {
+    min-height: 50px;
+    padding-inline: 20px;
+    border-radius: 16px;
+    font-size: 16px;
+  }
+
+  .order-modal {
+    align-items: stretch;
+    padding: 0;
+    z-index: 200;
+  }
+  .order-dialog {
+    position: fixed;
+    inset: auto 0 0 0;
+    width: 100%;
+    max-height: 92svh;
+    border-radius: 26px 26px 0 0;
+    padding: 20px 16px calc(18px + var(--safe-bottom));
+    overflow: auto;
+  }
+  .order-dialog h2 { font-size: 24px; margin-top: 6px; }
+  .order-dialog p { font-size: 14px; line-height: 1.6; }
+  .order-details {
+    min-height: 44svh;
+    max-height: 54svh;
+    resize: none;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  .modal-close { left: 12px; top: 12px; }
+}

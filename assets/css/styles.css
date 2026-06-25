@@ -387,24 +387,6 @@ pre { direction: ltr; text-align: left; white-space: pre-wrap; color: var(--mute
   backdrop-filter: blur(10px);
   pointer-events: none;
 }
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: radial-gradient(circle at center, color-mix(in srgb, var(--brand) 18%, transparent), transparent 42%), #050604;
-  color: white;
-}
-  width: min(460px, 100%);
-  text-align: center;
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: 28px;
-  padding: 32px 24px;
-  background: rgba(255,255,255,.08);
-  box-shadow: 0 28px 90px rgba(0,0,0,.42);
-  backdrop-filter: blur(18px);
-}
 
 @media (max-width: 720px) {
   html { scroll-padding-top: 76px; }
@@ -646,3 +628,118 @@ pre { direction: ltr; text-align: left; white-space: pre-wrap; color: var(--mute
     z-index: auto;
   }
 }
+
+
+/* RavenLab food keycaps + order fields update */
+.small-btn.active,
+.secondary-btn.active,
+.test-btn.active {
+  background: var(--brand);
+  color: #10120d;
+  border-color: var(--brand);
+}
+
+.summary-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  min-width: 190px;
+}
+.summary-actions .wide { width: 100%; text-align: center; }
+
+.swatch {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 5px;
+  aspect-ratio: 1.15;
+  min-height: 54px;
+}
+.swatch span {
+  width: 100%;
+  display: block;
+  padding: 3px 4px 2px;
+  border-radius: 10px;
+  background: rgba(0,0,0,.48);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+  backdrop-filter: blur(6px);
+}
+.swatch[style*="#ffffff"] span,
+.swatch[style*="#f4d13d"] span,
+.swatch[style*="#69cfff"] span {
+  background: rgba(255,255,255,.72);
+  color: #111;
+}
+
+.customer-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0;
+}
+.customer-fields label {
+  display: grid;
+  gap: 6px;
+  font-weight: 900;
+  color: var(--muted);
+}
+.customer-fields .full { grid-column: 1 / -1; }
+.order-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.order-actions button { min-height: 48px; }
+
+@media (max-width: 720px) {
+  .scene-tools {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+  }
+  .scene-toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .scene-tools .small-btn {
+    width: 100%;
+    min-height: 38px;
+  }
+  .swatches {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .swatch {
+    min-height: 62px;
+    aspect-ratio: 2.2;
+    border-radius: 18px;
+  }
+  .swatch span {
+    font-size: 12px;
+    padding: 5px 6px;
+  }
+  .customer-fields {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+  .order-actions {
+    grid-template-columns: 1fr;
+  }
+  .summary-actions { min-width: 0; width: 100%; }
+}
+
+/* Keep color names visible while selected */
+.swatch.active::after {
+  inset: 7px auto auto 7px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  font-size: 14px;
+  pointer-events: none;
+}
+.order-actions { margin-top: 14px; }

@@ -9,6 +9,13 @@ const CONFIG = {
     name: 'RavenLab',
     accent: '#9cc03d',
   },
+  contact: {
+    // ضع رقم واتساب المتجر بصيغة دولية بدون +، مثال العراق: 9647XXXXXXXXX.
+    // إذا تركته فارغًا، زر واتساب يفتح مشاركة عامة للرسالة.
+    whatsappNumber: '',
+    // عدل هذا الرابط إلى حساب RavenLab الرسمي.
+    instagramUrl: 'https://www.instagram.com/ravenlab/',
+  },
   basePrice: 5000,
   prices: {
     switchSeat: 2500,
@@ -19,6 +26,8 @@ const CONFIG = {
       strawberry: 3500,
       waffle: 3500,
       chocolate: 3000,
+      cheese: 3500,
+      noodles: 3500,
     }
   },
   bases: {
@@ -34,28 +43,26 @@ const CONFIG = {
     10: { standard: { label: 'عادي', path: `${MODEL_DIR}base_10.glb`, hidden: true } },
   },
   colors: [
-    { id: 'black', name: 'أسود', hex: '#050505' },
-    { id: 'white', name: 'أبيض', hex: '#ffffff' },
-    { id: 'raven', name: 'Raven Green', hex: '#9cc03d' },
-    { id: 'gray', name: 'رمادي', hex: '#8f9488' },
     { id: 'red', name: 'أحمر', hex: '#d83333' },
+    { id: 'yellow', name: 'أصفر', hex: '#f4d13d' },
     { id: 'blue', name: 'أزرق', hex: '#306ee8' },
     { id: 'green', name: 'أخضر', hex: '#37a967' },
-    { id: 'yellow', name: 'أصفر', hex: '#f4d13d' },
+    { id: 'sky', name: 'سمائي', hex: '#69cfff' },
     { id: 'pink', name: 'وردي', hex: '#ee76b8' },
-    { id: 'purple', name: 'بنفسجي', hex: '#8b5cf6' },
+    { id: 'wood', name: 'خشبي', hex: '#8b5a2b' },
     { id: 'orange', name: 'برتقالي', hex: '#f28c28' },
-    { id: 'transparent', name: 'شفاف', hex: '#ffffff', transparent: true },
+    { id: 'white', name: 'أبيض', hex: '#ffffff' },
+    { id: 'black', name: 'أسود', hex: '#050505' },
   ],
   keycaps: [
-    // يستخدم هذا الملف ككاب سادة / احتياطي.
-    { id: 'plain', label: 'سادة', category: 'plain', path: `${MODEL_DIR}keycap_letter.glb`, priceKey: 'plainKeycap', tintable: true },
-    // كابات الحروف ليست Sprite أو طباعة برمجية: كل حرف يستخدم ملفه الخاص مثل keycap_a.glb و keycap_g.glb.
-    { id: 'letter', label: 'حرف إنجليزي', category: 'letter', pathTemplate: `${MODEL_DIR}keycap_{letter}.glb`, fallbackPath: `${MODEL_DIR}keycap_letter.glb`, priceKey: 'letterKeycap', tintable: true },
-    { id: 'oreo', label: 'Oreo', category: 'special', path: `${MODEL_DIR}keycap_oreo.glb`, price: 3500, tintable: false },
-    { id: 'strawberry', label: 'Strawberry', category: 'special', path: `${MODEL_DIR}keycap_Strawberry.glb`, price: 3500, tintable: false },
-    { id: 'waffle', label: 'Waffle', category: 'special', path: `${MODEL_DIR}keycap_Waffle.glb`, price: 3500, tintable: false },
-    { id: 'chocolate', label: 'Chocolate', category: 'special', path: `${MODEL_DIR}keycap_CHOCOLATE.glb`, price: 3000, tintable: false },
+    { id: 'plain', label: 'سادة', category: 'plain', path: `${MODEL_DIR}keycap_plain.glb`, priceKey: 'plainKeycap', tintable: true },
+    { id: 'letter', label: 'حرف إنجليزي', category: 'letter', pathTemplate: `${MODEL_DIR}keycap_{letter}.glb`, fallbackPath: `${MODEL_DIR}keycap_plain.glb`, priceKey: 'letterKeycap', tintable: true },
+    { id: 'oreo', label: 'أوريو', category: 'special', path: `${MODEL_DIR}keycap_oreo.glb`, price: 3500, tintable: false },
+    { id: 'strawberry', label: 'فراولة', category: 'special', path: `${MODEL_DIR}keycap_Strawberry.glb`, price: 3500, tintable: false },
+    { id: 'waffle', label: 'وافل', category: 'special', path: `${MODEL_DIR}keycap_Waffle.glb`, price: 3500, tintable: false },
+    { id: 'chocolate', label: 'شوكولاتة', category: 'special', path: `${MODEL_DIR}keycap_CHOCOLATE.glb`, price: 3000, tintable: false },
+    { id: 'cheese', label: 'جبن', category: 'special', path: `${MODEL_DIR}keycap_Chees.glb`, price: 3500, tintable: false },
+    { id: 'noodles', label: 'نودلز', category: 'special', path: `${MODEL_DIR}keycap_Noodles.glb`, price: 3500, tintable: false },
   ],
   availableLetterKeycaps: ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'],
 };
@@ -85,6 +92,15 @@ const els = {
   orderDetails: $('#orderDetails'),
   copyOrder: $('#copyOrder'),
   shareOrder: $('#shareOrder'),
+  sendWhatsapp: $('#sendWhatsapp'),
+  openInstagram: $('#openInstagram'),
+  customerName: $('#customerName'),
+  customerPhone: $('#customerPhone'),
+  customerAddress: $('#customerAddress'),
+  customerNotes: $('#customerNotes'),
+  testMode: $('#testMode'),
+  testModePanel: $('#testModePanel'),
+  sceneHint: $('#sceneHint'),
   loader: $('#loader'),
   toast: $('#toast'),
   viewer: $('#viewer'),
@@ -99,11 +115,12 @@ const els = {
 const state = {
   count: 1,
   layout: 'standard',
-  baseColor: CONFIG.colors[0],
-  capColor: CONFIG.colors[1],
+  baseColor: CONFIG.colors.find(c => c.id === 'black') || CONFIG.colors[0],
+  capColor: CONFIG.colors.find(c => c.id === 'white') || CONFIG.colors[0],
   selected: new Set([0]),
   caps: [],
   currentToken: 0,
+  testMode: false,
 };
 
 let renderer, scene, camera, controls, loader, productGroup, assemblyGroup;
@@ -226,10 +243,21 @@ function initUI() {
     selectAllCaps();
   });
   els.resetCamera.addEventListener('click', fitCameraToObject);
+  els.testMode?.addEventListener('click', toggleTestMode);
+  els.testModePanel?.addEventListener('click', toggleTestMode);
   els.completeOrder?.addEventListener('click', openOrderModal);
   els.completeOrderMobile?.addEventListener('click', openOrderModal);
   els.copyOrder?.addEventListener('click', copyOrderDetails);
   els.shareOrder?.addEventListener('click', shareOrderDetails);
+  els.sendWhatsapp?.addEventListener('click', sendWhatsappOrder);
+  els.openInstagram?.addEventListener('click', openInstagramOrder);
+  [els.customerName, els.customerPhone, els.customerAddress, els.customerNotes].forEach((input) => {
+    input?.addEventListener('input', () => {
+      saveCustomerInfo();
+      updateOrderDetails();
+    });
+  });
+  restoreCustomerInfo();
   els.orderModal?.querySelectorAll('[data-close-order]').forEach((el) => el.addEventListener('click', closeOrderModal));
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeOrderModal();
@@ -244,6 +272,10 @@ function renderSwatches(container, colors, activeId, onClick) {
     btn.className = `swatch ${color.transparent ? 'transparent' : ''} ${color.id === activeId ? 'active' : ''}`;
     btn.style.setProperty('--swatch', color.hex);
     btn.title = color.name;
+    btn.setAttribute('aria-label', color.name);
+    const label = document.createElement('span');
+    label.textContent = color.name;
+    btn.appendChild(label);
     btn.addEventListener('click', () => {
       [...container.children].forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
@@ -700,6 +732,10 @@ function selectCapFromEvent(event) {
   if (!hit) return;
   const index = hit.object.userData.capIndex;
   if (index === undefined) return;
+  if (state.testMode) {
+    pressCap(index);
+    return;
+  }
   if (event.shiftKey || event.ctrlKey || event.metaKey) {
     if (state.selected.has(index)) state.selected.delete(index);
     else state.selected.add(index);
@@ -732,6 +768,74 @@ function refreshSelectionHelpers() {
     productGroup.add(helper);
     selectionHelpers.push(helper);
   });
+}
+
+
+function toggleTestMode() {
+  state.testMode = !state.testMode;
+  if (state.testMode) {
+    state.selected.clear();
+    refreshSelectionHelpers();
+    showToast('وضع التجربة مفعل. اضغط على أي زر في الكليكر.');
+  } else {
+    state.selected = new Set([0]);
+    refreshSelectionHelpers();
+    syncControlsFromSelection();
+    showToast('رجعنا لوضع التصميم. اضغط على كاب لتغييره.');
+  }
+  updateUI();
+}
+
+function pressCap(index) {
+  const cap = capObjects[index];
+  if (!cap || cap.userData.pressLock) return;
+
+  const rest = cap.userData.restPosition ? cap.userData.restPosition.clone() : cap.position.clone();
+  cap.userData.restPosition = rest.clone();
+  const box = new THREE.Box3().setFromObject(cap);
+  const size = box.getSize(new THREE.Vector3());
+  const down = THREE.MathUtils.clamp(Math.max(size.y, 1) * 0.11, 0.12, 0.75);
+  const duration = 170;
+  const start = performance.now();
+  cap.userData.pressLock = true;
+  playClickSound(index);
+
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const offset = Math.sin(Math.PI * t) * down;
+    cap.position.copy(rest);
+    cap.position.y -= offset;
+    if (t < 1) requestAnimationFrame(step);
+    else {
+      cap.position.copy(rest);
+      cap.userData.pressLock = false;
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+let clickAudioContext = null;
+function playClickSound(index = 0) {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    clickAudioContext = clickAudioContext || new AudioContextClass();
+    const ctx = clickAudioContext;
+    if (ctx.state === 'suspended') ctx.resume();
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(760 + (index % 5) * 35, ctx.currentTime);
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.14, ctx.currentTime + 0.006);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.045);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.052);
+  } catch (error) {
+    // الصوت اختياري. إذا رفض المتصفح تشغيله لا نوقف التجربة.
+  }
 }
 
 function setCount(count) {
@@ -783,7 +887,7 @@ function syncControlsFromSelection() {
   const cap = state.caps[first];
   els.capType.value = cap.type;
   els.letterInput.value = cap.letter || 'A';
-  const color = CONFIG.colors.find(c => c.hex.toLowerCase() === (cap.color || '').toLowerCase()) || CONFIG.colors[1];
+  const color = CONFIG.colors.find(c => c.hex.toLowerCase() === (cap.color || '').toLowerCase()) || CONFIG.colors.find(c => c.id === 'white') || CONFIG.colors[0];
   state.capColor = color;
   renderSwatches(els.capColors, CONFIG.colors, color.id, (selectedColor) => {
     state.capColor = selectedColor;
@@ -842,10 +946,38 @@ function getLayoutLabel() {
   return CONFIG.bases[state.count]?.[state.layout]?.label || state.layout;
 }
 
+function getCustomerInfo() {
+  return {
+    name: (els.customerName?.value || '').trim(),
+    phone: (els.customerPhone?.value || '').trim(),
+    address: (els.customerAddress?.value || '').trim(),
+    notes: (els.customerNotes?.value || '').trim(),
+  };
+}
+
+function saveCustomerInfo() {
+  localStorage.setItem('ravenlab-customer-info', JSON.stringify(getCustomerInfo()));
+}
+
+function restoreCustomerInfo() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('ravenlab-customer-info') || '{}');
+    if (els.customerName && saved.name) els.customerName.value = saved.name;
+    if (els.customerPhone && saved.phone) els.customerPhone.value = saved.phone;
+    if (els.customerAddress && saved.address) els.customerAddress.value = saved.address;
+    if (els.customerNotes && saved.notes) els.customerNotes.value = saved.notes;
+  } catch (error) {}
+}
+
+function updateOrderDetails() {
+  if (els.orderDetails) els.orderDetails.value = createOrderMessage(buildOrderJson());
+}
+
 function createOrderMessage(order = buildOrderJson()) {
+  const customer = getCustomerInfo();
   const keycapLines = order.keycaps.map((cap) => {
     let details = '';
-    if (cap.type === 'letter') details = `حرف ${cap.letter} — لون الكاب: ${cap.color} — ملف المجسم: keycap_${String(cap.letter || 'A').toLowerCase()}.glb`;
+    if (cap.type === 'letter') details = `حرف ${cap.letter} — لون الكاب: ${cap.color}`;
     else if (cap.type === 'plain') details = `سادة — لون الكاب: ${cap.color}`;
     else details = `${cap.design} — لون التصميم الأصلي`;
     return `كاب ${cap.slot}: ${details}`;
@@ -855,26 +987,24 @@ function createOrderMessage(order = buildOrderJson()) {
     `------------------------------\n` +
     `عدد الأزرار: ${order.switches}\n` +
     `شكل القاعدة: ${order.layout}\n` +
-    `لون الكليكر: ${order.baseColor}\n\n` +
+    `لون الأساس: ${order.baseColor}\n\n` +
     `تفاصيل الكابات:\n${keycapLines}\n\n` +
     `السعر الظاهر في الموقع: ${order.price.toLocaleString('en-US')} IQD تقريبًا\n` +
     `ملاحظة: السعر النهائي يتم تأكيده من RavenLab بعد مراجعة الطلب.\n` +
-    `أي تعديل يدوي على تفاصيل الطلب لا يُعتمد إلا بعد مراجعة RavenLab.\n` +
     `------------------------------\n` +
-    `اسم العميل:\n` +
-    `رقم الهاتف:\n` +
-    `العنوان / طريقة الاستلام:\n` +
-    `ملاحظات إضافية:`;
+    `اسم العميل: ${customer.name || 'غير مكتوب'}\n` +
+    `رقم الجوال: ${customer.phone || 'غير مكتوب'}\n` +
+    `العنوان: ${customer.address || 'غير مكتوب'}\n` +
+    `ملاحظات: ${customer.notes || 'لا توجد'}`;
 }
-
 
 function openOrderModal() {
   const order = buildOrderJson();
   localStorage.setItem('ravenlab-last-order', JSON.stringify(order));
-  if (els.orderDetails) els.orderDetails.value = createOrderMessage(order);
+  updateOrderDetails();
   els.orderModal?.classList.add('show');
   els.orderModal?.setAttribute('aria-hidden', 'false');
-  setTimeout(() => els.orderDetails?.focus(), 50);
+  setTimeout(() => els.customerPhone?.focus(), 50);
 }
 
 function closeOrderModal() {
@@ -883,6 +1013,7 @@ function closeOrderModal() {
 }
 
 async function copyOrderDetails() {
+  updateOrderDetails();
   const text = els.orderDetails?.value || createOrderMessage();
   try {
     await navigator.clipboard.writeText(text);
@@ -895,6 +1026,7 @@ async function copyOrderDetails() {
 }
 
 async function shareOrderDetails() {
+  updateOrderDetails();
   const text = els.orderDetails?.value || createOrderMessage();
   if (navigator.share) {
     try {
@@ -908,6 +1040,25 @@ async function shareOrderDetails() {
   await copyOrderDetails();
 }
 
+function makeWhatsappUrl(text) {
+  const phone = String(CONFIG.contact.whatsappNumber || '').replace(/\D/g, '');
+  const encoded = encodeURIComponent(text);
+  return phone ? `https://wa.me/${phone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
+}
+
+function sendWhatsappOrder() {
+  updateOrderDetails();
+  const text = els.orderDetails?.value || createOrderMessage();
+  window.open(makeWhatsappUrl(text), '_blank', 'noopener');
+}
+
+async function openInstagramOrder() {
+  await copyOrderDetails();
+  const url = CONFIG.contact.instagramUrl || 'https://www.instagram.com/';
+  window.open(url, '_blank', 'noopener');
+  showToast('تم نسخ الفاتورة. الصقها في رسالة إنستغرام.');
+}
+
 function updateUI() {
   [...els.countButtons.children].forEach((btn) => {
     btn.classList.toggle('active', Number(btn.dataset.count) === state.count);
@@ -915,6 +1066,11 @@ function updateUI() {
   els.countBadge.textContent = `${state.count} ${state.count === 1 ? 'زر' : 'أزرار'}`;
   els.baseColorLabel.textContent = state.baseColor.name;
   els.capColorLabel.textContent = state.capColor.name;
+
+  els.testMode?.classList.toggle('active', state.testMode);
+  if (els.testMode) els.testMode.textContent = state.testMode ? 'إنهاء التجربة' : 'تجربة الضغط';
+  if (els.testModePanel) els.testModePanel.textContent = state.testMode ? 'إنهاء التجربة' : 'تجربة الكليكر';
+  if (els.sceneHint) els.sceneHint.textContent = state.testMode ? 'وضع التجربة مفعل: اضغط على أي زر لسماع وتجربة الضغط' : 'اسحب للدوران · اضغط على كاب لتغييره';
 
   const selected = [...state.selected].sort((a, b) => a - b);
   els.selectedText.textContent = selected.length ? selected.map(i => `#${i + 1}`).join('، ') : 'لا يوجد تحديد';
@@ -948,4 +1104,4 @@ function showToast(message) {
   showToast.timer = setTimeout(() => els.toast.classList.remove('show'), 2600);
 }
 
-console.info('RavenLab configurator unlocked build - no domain lock');
+console.info('RavenLab configurator mobile food/test build');

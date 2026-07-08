@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css?v=mobile-food-test-20260625" />
+  <link rel="stylesheet" href="assets/css/styles.css?v=invoice-examples-20260709" />
   <script type="importmap">
   {
     "imports": {
@@ -41,10 +41,10 @@
       <div class="hero-copy">
         <span class="eyebrow">RavenLab 3D Configurator</span>
         <h1>صمم كليكر RavenLab بخطوات بسيطة.</h1>
-        <p>اختر عدد الأزرار، اختر الألوان، اضغط على أي كاب من المشهد لتغييره، ثم جرّب الضغط وأرسل الطلب.</p>
+        <p>اختر نموذج جاهز أو صمم بنفسك: حدد عدد الأزرار، اللون، شكل الكابات، ثم أرسل الفاتورة عبر واتساب أو إنستغرام.</p>
         <div class="hero-actions">
           <a class="primary-btn" href="#configurator">ابدأ التصميم</a>
-          <a class="secondary-btn" href="#steps">شاهد الخطوات</a>
+          <a class="secondary-btn" href="#steps">طريقة الاستخدام</a>
         </div>
       </div>
       <div class="hero-card" aria-hidden="true">
@@ -77,10 +77,10 @@
       <div class="mobile-simple-guide glass" aria-label="شرح خطوات التصميم على الجوال">
         <strong>طريقة الاستخدام المختصرة</strong>
         <div class="simple-step-row">
-          <span><b>1</b> اختر عدد الأزرار</span>
-          <span><b>2</b> اختر لون الأساس والكابات</span>
-          <span><b>3</b> اضغط على الكاب من الصورة لتغييره</span>
-          <span><b>4</b> جرّب الضغط ثم أكمل الطلب</span>
+          <span><b>1</b> اختر نموذج جاهز أو عدد الأزرار</span>
+          <span><b>2</b> اضغط على الكاب من الصورة</span>
+          <span><b>3</b> غيّر اللون أو الحرف أو الشكل</span>
+          <span><b>4</b> جرّب الضغط ثم أرسل الفاتورة</span>
         </div>
       </div>
       <div class="scene-panel glass">
@@ -121,8 +121,16 @@
         </div>
 
         <div class="mobile-help">
-          ابدأ بالترتيب: اختر عدد الأزرار، ثم اللون، ثم اضغط على أي كاب من المعاينة لتغييره.
+          اختر نموذج جاهز للتجربة السريعة، أو صمم من الصفر. للتعديل اضغط على الكاب داخل المعاينة ثم اختر اللون أو الشكل.
         </div>
+
+        <section class="control-section preset-section">
+          <div class="section-title">
+            <h3>نماذج جاهزة</h3>
+            <span>اختياري</span>
+          </div>
+          <div class="preset-grid" id="presetButtons"></div>
+        </section>
 
         <section class="control-section">
           <div class="section-title">
@@ -208,8 +216,8 @@
     <section class="order-dialog" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
       <button class="modal-close" type="button" data-close-order aria-label="إغلاق">×</button>
       <span class="eyebrow">تفاصيل الطلب</span>
-      <h2 id="orderTitle">انسخ التفاصيل وأرسلها لنا</h2>
-      <p>اكتب رقمك وعنوانك، ثم أرسل الفاتورة عبر واتساب أو انسخها. <strong>السعر النهائي يتم تأكيده من RavenLab بعد مراجعة الطلب.</strong></p>
+      <h2 id="orderTitle">أرسل الفاتورة لنا</h2>
+      <p>اكتب رقمك وعنوانك، ثم أرسل الفاتورة عبر واتساب أو إنستغرام. <strong>السعر النهائي يتم تأكيده من RavenLab بعد مراجعة الطلب.</strong></p>
       <div class="customer-fields" aria-label="معلومات العميل">
         <label>اسم العميل <input id="customerName" class="input" type="text" placeholder="مثال: علي" autocomplete="name" /></label>
         <label>رقم الجوال <input id="customerPhone" class="input" type="tel" placeholder="07xxxxxxxxx" autocomplete="tel" inputmode="tel" /></label>
@@ -218,9 +226,9 @@
       </div>
       <textarea id="orderDetails" class="order-details" readonly></textarea>
       <div class="order-actions">
-        <button id="sendWhatsapp" class="primary-btn" type="button">إرسال واتساب</button>
+        <button id="sendWhatsapp" class="primary-btn" type="button">إرسال عبر واتساب</button>
+        <button id="openInstagram" class="secondary-btn" type="button">نسخ وإرسال إنستغرام</button>
         <button id="copyOrder" class="secondary-btn" type="button">نسخ الفاتورة</button>
-        <button id="openInstagram" class="secondary-btn" type="button">إنستغرام</button>
         <button id="shareOrder" class="small-btn" type="button">مشاركة</button>
         <button class="small-btn" type="button" data-close-order>إغلاق</button>
       </div>
@@ -229,6 +237,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script type="module" src="assets/js/app.js?v=mobile-food-test-20260625"></script>
+  <script type="module" src="assets/js/app.js?v=invoice-examples-20260709"></script>
 </body>
 </html>

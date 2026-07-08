@@ -28,6 +28,7 @@ const CONFIG = {
       chocolate: 3000,
       cheese: 3500,
       noodles: 3500,
+      chess: 3500,
     }
   },
   bases: {
@@ -55,16 +56,72 @@ const CONFIG = {
     { id: 'black', name: 'أسود', hex: '#050505' },
   ],
   keycaps: [
-    { id: 'plain', label: 'سادة', category: 'plain', path: `${MODEL_DIR}keycap_plain.glb`, priceKey: 'plainKeycap', tintable: true },
-    { id: 'letter', label: 'حرف إنجليزي', category: 'letter', pathTemplate: `${MODEL_DIR}keycap_{letter}.glb`, fallbackPath: `${MODEL_DIR}keycap_plain.glb`, priceKey: 'letterKeycap', tintable: true },
+    { id: 'plain', label: 'سادة', category: 'plain', path: `${MODEL_DIR}Keycup_Base.glb`, fallbackPath: `${MODEL_DIR}keycap_plain.glb`, priceKey: 'plainKeycap', tintable: true },
+    {
+      id: 'letter',
+      label: 'حرف إنجليزي',
+      category: 'letter',
+      pathTemplates: [`${MODEL_DIR}Keycup_{letter}.glb`, `${MODEL_DIR}keycap_{lower}.glb`],
+      fallbackPath: `${MODEL_DIR}Keycup_Base.glb`,
+      priceKey: 'letterKeycap',
+      tintable: true
+    },
     { id: 'oreo', label: 'أوريو', category: 'special', path: `${MODEL_DIR}keycap_oreo.glb`, price: 3500, tintable: false },
     { id: 'strawberry', label: 'فراولة', category: 'special', path: `${MODEL_DIR}keycap_Strawberry.glb`, price: 3500, tintable: false },
     { id: 'waffle', label: 'وافل', category: 'special', path: `${MODEL_DIR}keycap_Waffle.glb`, price: 3500, tintable: false },
-    { id: 'chocolate', label: 'شوكولاتة', category: 'special', path: `${MODEL_DIR}keycap_CHOCOLATE.glb`, price: 3000, tintable: false },
+    { id: 'chocolate', label: 'شوكولاتة', category: 'special', path: `${MODEL_DIR}keycap_Chocolate.glb`, fallbackPath: `${MODEL_DIR}keycap_CHOCOLATE.glb`, price: 3000, tintable: false },
     { id: 'cheese', label: 'جبن', category: 'special', path: `${MODEL_DIR}keycap_Chees.glb`, price: 3500, tintable: false },
     { id: 'noodles', label: 'نودلز', category: 'special', path: `${MODEL_DIR}keycap_Noodles.glb`, price: 3500, tintable: false },
+    { id: 'chess', label: 'شطرنج', category: 'special', path: `${MODEL_DIR}keycap_Chess.glb`, price: 3500, tintable: false },
   ],
-  availableLetterKeycaps: ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'],
+  presets: [
+    {
+      id: 'classic3',
+      name: 'حروف كلاسيك',
+      desc: '3 أزرار بحروف A / B / C',
+      count: 3,
+      layout: 'standard',
+      baseColorId: 'black',
+      caps: [
+        { type: 'letter', letter: 'A', colorId: 'white' },
+        { type: 'letter', letter: 'B', colorId: 'white' },
+        { type: 'letter', letter: 'C', colorId: 'white' },
+      ]
+    },
+    {
+      id: 'color5',
+      name: 'ألوان مرحة',
+      desc: '5 أزرار سادة بألوان مختلفة',
+      count: 5,
+      layout: 'standard',
+      baseColorId: 'white',
+      caps: [
+        { type: 'plain', colorId: 'red' },
+        { type: 'plain', colorId: 'yellow' },
+        { type: 'plain', colorId: 'blue' },
+        { type: 'plain', colorId: 'green' },
+        { type: 'plain', colorId: 'pink' },
+      ]
+    },
+    {
+      id: 'food6',
+      name: 'أشكال مميزة',
+      desc: '6 أزرار من أشكال الطعام والتصاميم',
+      count: 6,
+      layout: 'standard',
+      baseColorId: 'wood',
+      caps: [
+        { type: 'oreo' },
+        { type: 'chocolate' },
+        { type: 'noodles' },
+        { type: 'cheese' },
+        { type: 'waffle' },
+        { type: 'chess' },
+      ]
+    },
+  ],
+  availableKeycupLetters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'],
+  availableLetterKeycaps: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'],
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -77,6 +134,7 @@ const els = {
   capColors: $('#capColors'),
   baseColorLabel: $('#baseColorLabel'),
   capColorLabel: $('#capColorLabel'),
+  presetButtons: $('#presetButtons'),
   capType: $('#capType'),
   letterBox: $('#letterBox'),
   letterInput: $('#letterInput'),
@@ -183,6 +241,7 @@ function initUI() {
   });
 
   renderLayoutButtons();
+  renderPresetButtons();
   renderSwatches(els.baseColors, CONFIG.colors, state.baseColor.id, (color) => {
     state.baseColor = color;
     applyBaseColor();
@@ -210,14 +269,14 @@ function initUI() {
     const hasModel = hasLetterModel(letter);
     if (!hasModel) {
       btn.classList.add('soft-disabled');
-      btn.title = `لا يوجد ملف keycap_${letter.toLowerCase()}.glb حاليًا، سيتم استخدام الكاب الاحتياطي.`;
+      btn.title = `لا يوجد ملف حرف ${letter} حاليًا، سيتم استخدام كاب احتياطي.`;
     } else {
-      btn.title = `يستخدم ملف keycap_${letter.toLowerCase()}.glb`;
+      btn.title = `يستخدم ملف الحرف ${getLetterModelFileName(letter)}`;
     }
     btn.addEventListener('click', () => {
       els.letterInput.value = letter;
       applyToSelectedCaps({ letter, type: 'letter' });
-      if (!hasModel) showToast(`لا يوجد keycap_${letter.toLowerCase()}.glb، استخدمنا كاب احتياطي مع الحرف.`);
+      if (!hasModel) showToast(`لا يوجد ملف حرف ${letter}، استخدمنا كاب احتياطي.`);
     });
     els.letterGrid.appendChild(btn);
   });
@@ -262,6 +321,53 @@ function initUI() {
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeOrderModal();
   });
+}
+
+
+function renderPresetButtons() {
+  if (!els.presetButtons) return;
+  els.presetButtons.innerHTML = '';
+  CONFIG.presets.forEach((preset) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'preset-card';
+    btn.innerHTML = `<strong>${preset.name}</strong><span>${preset.desc}</span><small>تطبيق النموذج</small>`;
+    btn.addEventListener('click', () => applyPreset(preset));
+    els.presetButtons.appendChild(btn);
+  });
+}
+
+function applyPreset(preset) {
+  const baseColor = CONFIG.colors.find(c => c.id === preset.baseColorId) || state.baseColor;
+  state.count = preset.count;
+  state.layout = CONFIG.bases[state.count]?.[preset.layout] ? preset.layout : 'standard';
+  state.baseColor = baseColor;
+  state.caps = Array.from({ length: state.count }, (_, index) => {
+    const presetCap = preset.caps[index] || { type: 'plain', colorId: 'white' };
+    const color = CONFIG.colors.find(c => c.id === presetCap.colorId) || CONFIG.colors.find(c => c.id === 'white') || CONFIG.colors[0];
+    const cap = {
+      type: presetCap.type || 'plain',
+      color: color.hex,
+      colorName: color.name,
+      letter: presetCap.letter || 'A',
+    };
+    return cap;
+  });
+  state.selected = new Set([0]);
+  state.capColor = CONFIG.colors.find(c => c.id === 'white') || CONFIG.colors[0];
+  renderLayoutButtons();
+  renderSwatches(els.baseColors, CONFIG.colors, state.baseColor.id, (color) => {
+    state.baseColor = color;
+    applyBaseColor();
+    updateUI();
+  });
+  renderSwatches(els.capColors, CONFIG.colors, state.capColor.id, (color) => {
+    state.capColor = color;
+    applyToSelectedCaps({ color: color.hex, colorName: color.name, transparent: !!color.transparent });
+  });
+  buildProduct();
+  updateUI();
+  showToast(`تم تطبيق نموذج ${preset.name}. يمكنك تعديله الآن.`);
 }
 
 function renderSwatches(container, colors, activeId, onClick) {
@@ -453,25 +559,60 @@ function loadScene(path) {
 }
 
 async function loadCapScene(def, capConfig) {
-  const primaryPath = resolveCapPath(def, capConfig);
-  try {
-    return { scene: await loadScene(primaryPath), path: primaryPath, usedFallback: false };
-  } catch (primaryError) {
-    if (!def.fallbackPath || def.fallbackPath === primaryPath) throw primaryError;
-    return { scene: await loadScene(def.fallbackPath), path: def.fallbackPath, usedFallback: true };
+  const paths = resolveCapPaths(def, capConfig);
+  let lastError = null;
+  for (let i = 0; i < paths.length; i++) {
+    try {
+      return { scene: await loadScene(paths[i]), path: paths[i], usedFallback: isCapFallbackPath(def, paths[i]) };
+    } catch (error) {
+      lastError = error;
+    }
   }
+  throw lastError || new Error('No cap model path found');
+}
+
+
+function isCapFallbackPath(def, path) {
+  if (def.category !== 'letter') return false;
+  return /Keycup_Base\.glb|keycap_plain\.glb/i.test(path || '');
+}
+
+function resolveCapPaths(def, capConfig) {
+  const paths = [];
+  const add = (path) => {
+    if (path && !paths.includes(path)) paths.push(path);
+  };
+  if (def.category === 'letter') {
+    const letter = sanitizeLetter(capConfig.letter || 'A');
+    const lower = letter.toLowerCase();
+    if (Array.isArray(def.pathTemplates)) {
+      def.pathTemplates.forEach((template) => add(template.replace('{letter}', letter).replace('{lower}', lower)));
+    } else if (def.pathTemplate) {
+      add(def.pathTemplate.replace('{letter}', lower).replace('{lower}', lower));
+    }
+    add(def.fallbackPath);
+    add(`${MODEL_DIR}keycap_plain.glb`);
+    return paths;
+  }
+  add(def.path);
+  add(def.fallbackPath);
+  return paths;
 }
 
 function resolveCapPath(def, capConfig) {
-  if (def.category === 'letter' && def.pathTemplate) {
-    const letter = sanitizeLetter(capConfig.letter || 'A').toLowerCase();
-    return def.pathTemplate.replace('{letter}', letter);
-  }
-  return def.path;
+  return resolveCapPaths(def, capConfig)[0];
 }
 
 function hasLetterModel(letter) {
-  return CONFIG.availableLetterKeycaps.includes(sanitizeLetter(letter));
+  const safe = sanitizeLetter(letter);
+  return CONFIG.availableLetterKeycaps.includes(safe) || CONFIG.availableKeycupLetters.includes(safe);
+}
+
+function getLetterModelFileName(letter) {
+  const safe = sanitizeLetter(letter);
+  if (CONFIG.availableKeycupLetters.includes(safe)) return `Keycup_${safe}.glb`;
+  if (CONFIG.availableLetterKeycaps.includes(safe)) return `keycap_${safe.toLowerCase()}.glb`;
+  return 'Keycup_Base.glb (احتياطي)';
 }
 
 function cloneScene(source) {
@@ -933,7 +1074,7 @@ function buildOrderJson() {
         design: def.label,
         color: def.tintable ? (cap.colorName || cap.color || 'أبيض') : 'original',
         letter: def.category === 'letter' ? (cap.letter || 'A') : null,
-        modelFile: def.category === 'letter' ? `keycap_${String(cap.letter || 'A').toLowerCase()}.glb` : resolveCapPath(def, cap).split('/').pop(),
+        modelFile: def.category === 'letter' ? getLetterModelFileName(cap.letter || 'A') : resolveCapPath(def, cap).split('/').pop(),
         price: def.price !== undefined ? def.price : (CONFIG.prices[def.priceKey] || 0),
       };
     }),
@@ -1017,7 +1158,7 @@ async function copyOrderDetails() {
   const text = els.orderDetails?.value || createOrderMessage();
   try {
     await navigator.clipboard.writeText(text);
-    showToast('تم نسخ تفاصيل الطلب. أرسلها لنا لإكمال الطلب.');
+    showToast('تم نسخ الفاتورة. أرسلها لنا لإكمال الطلب.');
   } catch (error) {
     els.orderDetails?.select();
     document.execCommand?.('copy');
@@ -1056,7 +1197,7 @@ async function openInstagramOrder() {
   await copyOrderDetails();
   const url = CONFIG.contact.instagramUrl || 'https://www.instagram.com/';
   window.open(url, '_blank', 'noopener');
-  showToast('تم نسخ الفاتورة. الصقها في رسالة إنستغرام.');
+  showToast('تم نسخ الفاتورة. الصقها في رسالة إنستغرام إلى RavenLab.');
 }
 
 function updateUI() {
@@ -1104,4 +1245,4 @@ function showToast(message) {
   showToast.timer = setTimeout(() => els.toast.classList.remove('show'), 2600);
 }
 
-console.info('RavenLab configurator mobile food/test build');
+console.info('RavenLab configurator invoice examples build');

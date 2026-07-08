@@ -743,3 +743,55 @@ pre { direction: ltr; text-align: left; white-space: pre-wrap; color: var(--mute
   pointer-events: none;
 }
 .order-actions { margin-top: 14px; }
+
+
+/* RavenLab invoice + examples update */
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.preset-card {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  color: var(--text);
+  text-align: right;
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.preset-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--brand) 60%, var(--border));
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+}
+.preset-card strong,
+.preset-card span,
+.preset-card small { display: block; }
+.preset-card strong { font-size: 18px; font-weight: 900; margin-bottom: 4px; }
+.preset-card span { color: var(--muted); line-height: 1.55; font-weight: 700; }
+.preset-card small { margin-top: 8px; color: var(--brand); font-weight: 900; }
+
+@media (min-width: 721px) {
+  .preset-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .preset-section { padding-top: 10px; }
+}
+
+@media (max-width: 720px) {
+  .preset-grid { grid-template-columns: 1fr; }
+  .preset-card {
+    min-height: 88px;
+    border-radius: 20px;
+    padding: 15px;
+  }
+  .preset-card strong { font-size: 19px; }
+  .order-actions .primary-btn,
+  .order-actions .secondary-btn,
+  .order-actions .small-btn {
+    min-height: 52px;
+    font-size: 15px;
+  }
+}
